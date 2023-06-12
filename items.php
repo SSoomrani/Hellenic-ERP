@@ -14,7 +14,7 @@
 
     $rows = get_table_contents($conn, $table_name);
 
-    //Run queries for widgets from initialise.php
+    
 
     $edit_error_info = get_edit_error_info($conn, $table_name);
 ?>
@@ -46,7 +46,6 @@
         </div>
     </div>
     <div id="form-placeholder">
-        <!-- Include other forms that you want to include -->
         <?php include 'templates/forms.php'; ?>
     </div> 
 </body>
@@ -67,9 +66,10 @@
         configureWidgets(4, "blank", "hourglass_empty", "blank", "blank", "blank");
     }
 
+
     function checkEditError() {
         var error = "<?php echo $edit_error_info[0]; ?>";
-        var rowID = "<?php echo $edit_error_info[1]; ?>";
+        var rowID = "<?php echo $edit_error_info[1]; ?>"
         if (error != "") {
             var errorMsg = document.getElementById("edit_error");
             errorMsg.innerText = error;

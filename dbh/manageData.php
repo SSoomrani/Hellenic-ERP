@@ -69,6 +69,7 @@ function add() {
         $_SESSION["mysql_error"] = "Error description: ". $conn -> error;
         $_SESSION["row_id"] = $_POST['id'];
     }
+    echo($conn->error);
     header("Location: {$_SERVER["HTTP_REFERER"]}");
     exit();
 }

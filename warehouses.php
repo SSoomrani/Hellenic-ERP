@@ -1,7 +1,7 @@
 <?php
     session_start();
 
-    $table_name = $_SESSION["current_table"] = "items";
+    $table_name = $_SESSION["current_table"] = "warehouse";
 
     require 'dbh/initialise.php';
     require 'dbh/customer_data.php';
@@ -46,7 +46,7 @@
         </div>
     </div>
     <div id="form-placeholder">
-        <!-- Include other forms that you want to include -->
+        <?php include 'templates/add_form.php' ?>
         <?php include 'templates/forms.php'; ?>
     </div> 
 </body>
@@ -72,6 +72,18 @@
         var rowID = "<?php echo $edit_error_info[1]; ?>";
         if (error != "") {
             var errorMsg = document.getElementById("edit_error");
+            errorMsg.innerText = error;
+            if (rowID != -1) {
+                displayEditForm(rowID - 1);
+            }
+            <?php session_unset(); ?>
+        }
+    }
+    function checkAddError() {
+        var error = "<?php echo $add_error_info[0]; ?>";
+        var rowID = "<?php echo $add_error_info[1]; ?>";
+        if (error != "") {
+            var errorMsg = document.getElementById("add_error");
             errorMsg.innerText = error;
             if (rowID != -1) {
                 displayEditForm(rowID - 1);

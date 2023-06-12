@@ -111,9 +111,9 @@ function select(td) {
     var rowIndex = td.parentNode.rowIndex;
     if (!selected.includes(rowIndex)) {
         selected.push(rowIndex);
-        rows[rowIndex].classList.add('selected');
+        rows[rowIndex].classList.add('row-selected');
     } else {
-        rows[rowIndex].classList.remove('selected');
+        rows[rowIndex].classList.remove('row-selected');
         selected.pop(rowIndex);
     }
 }
@@ -124,11 +124,11 @@ function selectAll() {
     if (allSelected) {
         for (i = 1; i < rows.length; i++) {
             selected[i] = i;
-            rows[i].classList.add('selected');
+            rows[i].classList.add('row-selected');
         }
     } else {
         for (i = 1; i < rows.length; i++) {
-            rows[i].classList.remove('selected');
+            rows[i].classList.remove('row-selected');
         }
         selected = [];
     }
@@ -136,7 +136,7 @@ function selectAll() {
 function deleteMode() {
     var table = document.getElementById("tableView");
     var rows = table.rows;
-    var columnLength = rows[0].cells.length - 1;
+    var columnLength = rows[0].cells.length;
     var button = document.getElementById("delete-button");
     if (button == null) { // if the table is in edit mode
         for (i = 1; i < rows.length; i++) {

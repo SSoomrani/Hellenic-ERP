@@ -59,7 +59,7 @@
         <?php include 'templates/forms.php'; ?>
     </div>                             
     <div id="email-invoice-form" class="popup-form">
-        <form class="popup-form-content animate" action="./manageData.php" method="post">
+        <form class="popup-form-content animate" action="dbh/manageData.php" method="post">
             <input id="selectedCount" type="hidden" value=""></input>
             <div id="email-form-container" class="popup-form-container">
                 <p class="text-unsuccess" id="select-error"></p>

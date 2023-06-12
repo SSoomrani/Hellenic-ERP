@@ -35,6 +35,13 @@
     $query = $conn->query('SELECT * FROM '. $table_name);
     return $query->fetch_all(MYSQLI_ASSOC);
  }
+
+ function get_row_contents($conn, $query_string) {
+    $query = $conn->query($query_string);
+    $contents = $query->fetch_all();
+
+    return $contents;
+ }
  function get_edit_error_info() {
     $sql_error = "";
     if (isset($_SESSION['mysql_error'])) {
