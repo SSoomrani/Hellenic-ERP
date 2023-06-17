@@ -3,6 +3,7 @@
 
     $table_name = $_SESSION["current_table"] = "customers";
 
+    require 'dbh/dbh.php';
     require 'dbh/initialise.php';
     require 'dbh/customer_data.php';
 
@@ -18,7 +19,7 @@
     $total_week = get_row_count($conn, "SELECT * FROM `customers` WHERE YEARWEEK(created_at) = YEARWEEK(CURDATE())");
     $total_outstanding = get_row_count($conn, "SELECT * FROM `customers` WHERE `outstanding_balance` IS NOT NULL");
 
-    $edit_error_info = get_edit_error_info($conn, $table_name);
+    $edit_error_info = get_error_info();
 ?>
 <!DOCTYPE html>
 <html>

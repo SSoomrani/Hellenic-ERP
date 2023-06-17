@@ -3,6 +3,7 @@
 
     $table_name = $_SESSION["current_table"] = "items";
 
+    require 'dbh/dbh.php';
     require 'dbh/initialise.php';
     require 'dbh/customer_data.php';
 
@@ -16,7 +17,7 @@
 
     //Run queries for widgets from initialise.php
 
-    $edit_error_info = get_edit_error_info($conn, $table_name);
+    $edit_error_info = get_error_info();
 ?>
 <!DOCTYPE html>
 <html>
@@ -67,14 +68,23 @@
         configureWidgets(4, "blank", "hourglass_empty", "blank", "blank", "blank");
     }
 
-    function checkEditError() {
+    function checkError() {
         var error = "<?php echo $edit_error_info[0]; ?>";
         var rowID = "<?php echo $edit_error_info[1]; ?>";
+        var errorType = "<?php echo $edit_error_info[2]; ?>";
         if (error != "") {
-            var errorMsg = document.getElementById("edit_error");
-            errorMsg.innerText = error;
-            if (rowID != -1) {
-                displayEditForm(rowID - 1);
+            if (errorType == "edit") {
+                var errorMsg = document.getElementById("edit_error");
+                errorMsg.innerText = error;
+                if (rowID != -1) {
+                    displayEditForm(rowID - 1);
+                }
+            } else {
+                var errorMsg = document.getElementById("add_error");
+                errorMsg.innerText = error;
+                if (rowID != -1) {
+                    document.getElementById('add-form').style.display='block';
+                }
             }
             <?php session_unset(); ?>
         }

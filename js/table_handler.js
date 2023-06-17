@@ -2,59 +2,110 @@ var allSelected = false;
 var selected = [];
 
 function clearFilters() {
+    var tables = getTables();
     document.getElementById("advanced-filter").value = "";
     document.getElementById("filter").value = "";
-    var table = document.getElementById("tableView");
-    var rows = table.rows;
-    var columnLength = rows[0].cells.length - 1;
-    for (i = 1; i < rows.length; i++) {
-        rows[i].style.display = "";
-    }
-    for (i = 0; i < columnLength - 1; i++) {
-        rows[0].getElementsByTagName("TH")[i].style.display = "";
-        for (k = 1; k < rows.length; k++) {
-            rows[k].getElementsByTagName("TD")[i].style.display = "";
+    for (k = 0; k < tables.length; k++) {
+        var rows = tables[k].rows;
+        var columnLength = rows[0].cells.length - 1;
+        for (i = 1; i < rows.length; i++) {
+            rows[i].style.display = "";
+        }
+        for (i = 0; i < columnLength - 1; i++) {
+            rows[0].getElementsByTagName("TH")[i].style.display = "";
+            for (k = 1; k < rows.length; k++) {
+                rows[k].getElementsByTagName("TD")[i].style.display = "";
+            }
         }
     }
 }
+
 function filterTable() {
+    var tables = getTables();
     var column = document.getElementById("column_select").value;
     var filter = document.getElementById("advanced-filter").value.toUpperCase();
-    var table = document.getElementById("tableView");
+    for (k - 0; k < tables.length; k++) {
+        var rows = tables[k].rows;
+        for (i = 1; i < rows.length; i++) {
+            var item = rows[i].getElementsByTagName("TD")[column].innerHTML.toUpperCase();
+            if (item.indexOf(filter) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+}
+
+function searchTableFilter(table, column, filter, d) {
+    filter = filter.toUpperCase();
     var rows = table.rows;
     for (i = 1; i < rows.length; i++) {
         var item = rows[i].getElementsByTagName("TD")[column].innerHTML.toUpperCase();
-        if (item.indexOf(filter) > -1) {
+        if (item.indexOf(filter) != -1) {
             rows[i].style.display = "";
         } else {
-            rows[i].style.display = "none";
-        }
-    }
-}
-function searchTable() {
-    var filter = document.getElementById("filter").value.toUpperCase();
-    var table = document.getElementById("tableView");
-    var rows = table.rows;
-    var columnLength = rows[0].cells.length - 1;
-    var located = false;
-    for (i = 1; i < rows.length; i++) {
-        for (k = 1; k < columnLength; k++) {
-            var item = rows[i].getElementsByTagName("TD")[k].innerHTML.toUpperCase();
-            if (item.indexOf(filter) > -1) {
-            located = true
+            if (d) {
+                table.deleteRow(i);
+                i--;
+            } else {
+                rows[i].style.display = "none";
             }
         }
-        if (located == false) {
-            rows[i].style.display = "none";
-        } else {
+    }
+}
+
+function searchTableDateFilter(table, column, filter) {
+    var currentDate = new Date();
+    var currentYear = currentDate.getFullYear();
+    var currentMonth = currentDate.getMonth() + 1;
+    var currentDay = currentDate.getDate();
+    var rows = table.rows;
+    for (i = 1; i < rows.length; i++) {
+        var expiryDate = rows[i].getElementsByTagName("TD")[column].innerHTML.toUpperCase();
+        var inputYear = parseInt(expiryDate.substring(0, 4));
+        var inputMonth = parseInt(expiryDate.substring(5, 7));
+        var inputDay = parseInt(expiryDate.substring(8, 10));
+        var monthDiff = (inputYear - currentYear) * 12 + (inputMonth - currentMonth);
+        if (monthDiff <= 1 && (inputDay <= currentDay || monthDiff < 1)) {
             rows[i].style.display = "";
-            located = false;
+        } else {
+            rows[i].style.display = "none";
         }
     }
 }
-function sortTable(n) {
-    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-    table = document.getElementById("tableView");
+
+function searchTable(d) {
+    var tables = getTables();
+    var filter = document.getElementById("filter").value.toUpperCase();
+    for (k = 0; k < tables.length; k++) {
+        var rows = tables[k].rows;
+        var columnLength = rows[0].cells.length - 1;
+        var located = false;
+        for (i = 1; i < rows.length; i++) {
+            for (h = 1; h < columnLength; h++) {
+                var item = rows[i].getElementsByTagName("TD")[h].innerHTML.toUpperCase();
+                if (item.indexOf(filter) > -1) {
+                    located = true
+                }
+            }
+            if (located == false) {
+                if (d) {
+                    tables[k].deleteRow(i);
+                    i--;
+                } else {
+                    rows[i].style.display = "none";
+                }
+            } else {
+                rows[i].style.display = "";
+                located = false;
+            }
+        }
+    }
+}
+
+function sortTable(table, n) {
+    var rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
     switching = true;
     dir = "asc";
     var integerSort = isColumnAllIntegers(table, n)
@@ -70,23 +121,23 @@ function sortTable(n) {
                 var intY = parseInt(y.innerHTML.toLowerCase().trim());
                 if (dir == "asc") {
                     if (intX > intY) {
-                    shouldSwitch = true;
-                    break;
+                        shouldSwitch = true;
+                        break;
                     }
-                    } else if (dir == "desc") {
-                        if (intX < intY) {
+                } else if (dir == "desc") {
+                    if (intX < intY) {
                         shouldSwitch = true;
                         break;
                     }
                 }
             } else {
                 if (dir == "asc") {
-                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
                         shouldSwitch = true;
                         break;
-                        }
-                    } else if (dir == "desc") {
-                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
                         shouldSwitch = true;
                         break;
                     }
@@ -96,7 +147,7 @@ function sortTable(n) {
         if (shouldSwitch) {
             rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
             switching = true;
-            switchcount ++;
+            switchcount++;
         } else {
             if (switchcount == 0 && dir == "asc") {
                 dir = "desc";
@@ -105,36 +156,38 @@ function sortTable(n) {
         }
     }
 }
-function select(td) {
-    var table = document.getElementById("tableView");
-    var rows = table.rows;
-    var rowIndex = td.parentNode.rowIndex;
+
+function select(tr) {
+    var rowIndex = tr.rowIndex;
     if (!selected.includes(rowIndex)) {
         selected.push(rowIndex);
-        rows[rowIndex].classList.add('row-selected');
+        tr.classList.add('row-selected');
     } else {
-        rows[rowIndex].classList.remove('row-selected');
+        tr.classList.remove('row-selected');
         selected.pop(rowIndex);
     }
 }
+
 function selectAll() {
+    var tables = getTables();
     allSelected = !allSelected;
-    var table = document.getElementById("tableView");
-    var rows = table.rows;
-    if (allSelected) {
-        for (i = 1; i < rows.length; i++) {
-            selected[i] = i;
-            rows[i].classList.add('row-selected');
+    for (k = 0; k < tables.length; k++) {
+        var rows = tables[k].rows;
+        if (allSelected) {
+            for (i = 1; i < rows.length; i++) {
+                selected[i] = i;
+                rows[i].classList.add('row-selected');
+            }
+        } else {
+            for (i = 1; i < rows.length; i++) {
+                rows[i].classList.remove('row-selected');
+            }
+            selected = [];
         }
-    } else {
-        for (i = 1; i < rows.length; i++) {
-            rows[i].classList.remove('row-selected');
-        }
-        selected = [];
     }
 }
-function deleteMode() {
-    var table = document.getElementById("tableView");
+
+function deleteMode(table) {
     var rows = table.rows;
     var columnLength = rows[0].cells.length;
     var button = document.getElementById("delete-button");
@@ -142,7 +195,7 @@ function deleteMode() {
         for (i = 1; i < rows.length; i++) {
             var item = rows[i].getElementsByTagName("TD")[columnLength];
             item.lastChild.innerHTML = "&#xe3c9;";
-            item.setAttribute("onclick", "displayEditForm(" + (i - 1) + ");" );
+            item.setAttribute("onclick", "displayEditForm(" + (i - 1) + ");");
         }
         button = document.getElementById("edit-button");
         button.id = "delete-button";
@@ -151,9 +204,49 @@ function deleteMode() {
         for (i = 1; i < rows.length; i++) {
             var item = rows[i].getElementsByTagName("TD")[columnLength];
             item.lastChild.innerHTML = "&#xe872;";
-            item.setAttribute("onclick", "displayDeleteForm(" + (i - 1) + ");" );
+            item.setAttribute("onclick", "displayDeleteForm(" + (i - 1) + ");");
         }
         button.id = "edit-button";
         button.innerHTML = "&#xe3c9;"
     }
+}
+
+function findColumnIndexByName(table, name) {
+    name = name.toUpperCase();
+    for (i = 0; i < table.rows[0].getElementsByTagName("TH").length; i++) {
+        var column = table.rows[0].getElementsByTagName("TH")[i].innerHTML.toUpperCase();
+        if (column == name) {
+            return i;
+        }
+    }
+    console.log("findColumnIndexByName ERROR: Could not find column!");
+    return -1;
+}
+
+function clearEditColumn(table) {
+    var rows = table.rows;
+    var columnLength = rows[0].cells.length;
+    for (i = 1; i < rows.length; i++) {
+        var item = rows[i].getElementsByTagName("TD")[columnLength];
+        item.style.display = "none";
+    }
+}
+
+function clearEditColumns(tables) {
+    for (k = 0; k < tables.length; k++) {
+        var rows = tables[k].rows;
+        var columnLength = rows[0].cells.length;
+        for (i = 1; i < rows.length; i++) {
+            var item = rows[i].getElementsByTagName("TD")[columnLength];
+            item.style.display = "none";
+        }
+    }
+}
+
+function getTables() {
+    return document.getElementsByTagName("TABLE");
+}
+
+function removeOnClicks() {
+
 }

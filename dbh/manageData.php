@@ -40,6 +40,7 @@ function add() {
     require 'dbh.php';
     $data_names = array();
     $field_names = array();
+    $submitted_data = array();
     $table_name = $_POST['table_name'];
     $query = $conn->query('SHOW FULL COLUMNS FROM '. $table_name);
     while ($row = $query->fetch_assoc()) {
@@ -59,6 +60,7 @@ function add() {
         if ($_POST[$field_names[$i]] != "") {
             $query_string = $query_string. "'". $_POST[$field_names[$i]]. "', ";
         }
+        $submitted_data[] = $_POST[$field_names[$i]];
     }
     $query_string = substr($query_string, 0, -2). ");";
 
@@ -67,7 +69,8 @@ function add() {
     }
     catch (Exception $e) {
         $_SESSION["mysql_error"] = "Error description: ". $conn -> error;
-        $_SESSION["row_id"] = $_POST['id'];
+        $_SESSION["error_type"] = "add";
+        $_SESSION["submitted_data"] = $submitted_data;
     }
     echo($conn->error);
     header("Location: {$_SERVER["HTTP_REFERER"]}");
@@ -113,6 +116,7 @@ function append() {
     catch (Exception $e) {
         $_SESSION["mysql_error"] = "Error description: ". $conn -> error;
         $_SESSION["row_id"] = $_POST['id'];
+        $_SESSION["error_type"] = "edit";
     }
     header("Location: {$_SERVER["HTTP_REFERER"]}");
     exit();

@@ -1,21 +1,13 @@
 <?php
     session_start();
 
-    $table_name = $_SESSION["current_table"] = "items";
+    $table_name = $_SESSION["current_table"] = "invoices";
 
     require 'dbh/dbh.php';
     require 'dbh/initialise.php';
-    require 'dbh/customer_data.php';
+    require 'dbh/customer_data.php';    
 
-    $table_info = get_table_info($conn, $table_name);
-    $formatted_names = $table_info[0];
-    $field_names = $table_info[1];
-    $editable_formatted_names = $table_info[2];
-    $editable_field_names = $table_info[3];
-
-    $rows = get_table_contents($conn, $table_name);
-
-    
+    //Run queries for widgets from initialise.php
 
     $edit_error_info = get_error_info();
 ?>
@@ -42,12 +34,19 @@
         <h5>Pages / <p class="inline-shallow"><?php echo(ucfirst($table_name)); ?></p></h5>
         <div id="widget-placeholder" class="grid-container">
             <div class="card item12">
+                <h6 class="table-header">Invoices due for delivery today</h6>
+                <?php include 'templates/table.php'; ?>
+            </div>
+            <div class="card item13">
+                <h6 class="table-header">Products expiring soon</h6>
+                <?php $table_name = "stocked_items"; ?>
                 <?php include 'templates/table.php'; ?>
             </div>
         </div>
     </div>
     <div id="form-placeholder">
         <?php include 'templates/forms.php'; ?>
+        <?php include 'templates/add_form.php'; ?>
         <?php include 'templates/edit_form.php'; ?>
     </div> 
 </body>
@@ -56,9 +55,13 @@
     document.addEventListener('DOMContentLoaded', function() {
         loadElement("sidenav.html", "nav-placeholder");
         loadElement("widgets.html", "widget-placeholder", populateWidgets);
+        searchTableFilter(getTables()[0], findColumnIndexByName(getTables()[0], "Delivery Date"), new Date().toJSON().slice(0,10), true);
+        searchTableDateFilter(getTables()[1], findColumnIndexByName(getTables()[1], "Expiry Date"), 1);
+        clearEditColumns(getTables());
     });
 
-    checkEditError();
+    checkError();
+
 
     function populateWidgets()
     {
@@ -66,17 +69,28 @@
         configureWidgets(2, "blank", "hourglass_empty", "blank", "blank", "blank");
         configureWidgets(3, "blank", "hourglass_empty", "blank", "blank", "blank");
         configureWidgets(4, "blank", "hourglass_empty", "blank", "blank", "blank");
+        fixFilter()
+    }
+    function fixFilter() {
     }
 
-
-    function checkEditError() {
+    function checkError() {
         var error = "<?php echo $edit_error_info[0]; ?>";
-        var rowID = "<?php echo $edit_error_info[1]; ?>"
+        var rowID = "<?php echo $edit_error_info[1]; ?>";
+        var errorType = "<?php echo $edit_error_info[2]; ?>";
         if (error != "") {
-            var errorMsg = document.getElementById("edit_error");
-            errorMsg.innerText = error;
-            if (rowID != -1) {
-                displayEditForm(rowID - 1);
+            if (errorType == "edit") {
+                var errorMsg = document.getElementById("edit_error");
+                errorMsg.innerText = error;
+                if (rowID != -1) {
+                    displayEditForm(rowID - 1);
+                }
+            } else {
+                var errorMsg = document.getElementById("add_error");
+                errorMsg.innerText = error;
+                if (rowID != -1) {
+                    document.getElementById('add-form').style.display='block';
+                }
             }
             <?php session_unset(); ?>
         }

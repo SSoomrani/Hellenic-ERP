@@ -9,7 +9,7 @@
 
 <div id="edit-form" class="popup-form">
   <form class="popup-form-content animate" action="dbh/manageData.php" method="post">
-    <input type="hidden" id="identity" name="id" value="">
+    <input type="hidden" id="edit-form-identity" name="id" value="">
     <input type="hidden" name="table_name" value="<?php echo($table_name);?>">
     <div class="popup-form-container" id="editForm">
       <p id="edit_error"></p>

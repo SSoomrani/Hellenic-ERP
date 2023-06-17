@@ -1,11 +1,12 @@
 <?php
+    $rows = get_table_contents($conn, $table_name);
     $table_info = get_table_info($conn, $table_name);
     $formatted_names = $table_info[0];
     $field_names = $table_info[1];
     $editable_formatted_names = $table_info[2];
     $editable_field_names = $table_info[3];
 ?>
-<table id="tableView">
+<table>
     <tr>
         <?php foreach($formatted_names as $key => $value): ?>
             <?php if($key != 0): ?>
@@ -16,15 +17,15 @@
         <?php endforeach; ?>
     </tr>
     <?php foreach($rows as $key => $row): ?>
-        <tr>
+        <tr onclick="select(this)">
             <?php foreach($field_names as $field_key => $field_name): ?>
                 <?php if ($field_key == 0): ?>
-                    <td onclick="select(<?php echo($key) ?>)"><?php echo $rows[$key][$field_names[$field_key]]; ?></td>
+                    <td><?php echo $rows[$key][$field_names[$field_key]]; ?></td>
                 <?php else: ?>
-                    <td onclick="select(this)"><?php echo $rows[$key][$field_name]; ?></td>
+                    <td><?php echo $rows[$key][$field_name]; ?></td>
                 <?php endif; ?>
             <?php endforeach; ?>
-            <td class="edit-column" onclick="displayEditForm(<?php echo($key); ?>)"><i class="material-icons">edit</i></td>
+            <td class="edit-column" onclick="displayEditForm(<?php echo($key); ?>, this.parentNode.parentNode.parentNode)"><i class="inline-icon material-icons">edit</i></td>
         </tr>
     <?php endforeach; ?>
 </table>

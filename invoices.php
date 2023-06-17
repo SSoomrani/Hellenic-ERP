@@ -3,6 +3,7 @@
 
     $table_name = $_SESSION["current_table"] = "invoices";
 
+    require 'dbh/dbh.php';
     require 'dbh/initialise.php';
     require 'dbh/customer_data.php';
 
@@ -26,7 +27,7 @@
     $today_yesterday_diff = $amount_today - $amount_yesterday;
     $customer_identifiers = get_customer_names($conn);
 
-    $edit_error_info = get_edit_error_info($conn, $table_name);
+    $edit_error_info = get_error_info();
 ?>
 <!DOCTYPE html>
 <html>
@@ -57,6 +58,8 @@
     </div>
     <div id="form-placeholder">
         <?php include 'templates/forms.php'; ?>
+        <?php include 'templates/add_form.php'; ?>
+        <?php include 'templates/edit_form.php'; ?>
     </div>                             
     <div id="email-invoice-form" class="popup-form">
         <form class="popup-form-content animate" action="dbh/manageData.php" method="post">

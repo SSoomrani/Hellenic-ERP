@@ -3,6 +3,7 @@
 
     $table_name = $_SESSION["current_table"] = "warehouse";
 
+    require 'dbh/dbh.php';
     require 'dbh/initialise.php';
     require 'dbh/customer_data.php';
 
@@ -16,7 +17,7 @@
 
     //Run queries for widgets from initialise.php
 
-    $edit_error_info = get_edit_error_info($conn, $table_name);
+    $error_info = get_error_info();
 ?>
 <!DOCTYPE html>
 <html>
@@ -47,6 +48,7 @@
     </div>
     <div id="form-placeholder">
         <?php include 'templates/add_form.php' ?>
+        <?php include 'templates/edit_form.php'; ?>
         <?php include 'templates/forms.php'; ?>
     </div> 
 </body>
@@ -57,7 +59,7 @@
         loadElement("widgets.html", "widget-placeholder", populateWidgets);
     });
 
-    checkEditError();
+    checkError();
 
     function populateWidgets()
     {
@@ -67,26 +69,23 @@
         configureWidgets(4, "blank", "hourglass_empty", "blank", "blank", "blank");
     }
 
-    function checkEditError() {
-        var error = "<?php echo $edit_error_info[0]; ?>";
-        var rowID = "<?php echo $edit_error_info[1]; ?>";
+    function checkError() {
+        var error = "<?php echo $error_info[0]; ?>";
+        var rowID = "<?php echo $error_info[1]; ?>";
+        var errorType = "<?php echo $error_info[2]; ?>";
         if (error != "") {
-            var errorMsg = document.getElementById("edit_error");
-            errorMsg.innerText = error;
-            if (rowID != -1) {
-                displayEditForm(rowID - 1);
-            }
-            <?php session_unset(); ?>
-        }
-    }
-    function checkAddError() {
-        var error = "<?php echo $add_error_info[0]; ?>";
-        var rowID = "<?php echo $add_error_info[1]; ?>";
-        if (error != "") {
-            var errorMsg = document.getElementById("add_error");
-            errorMsg.innerText = error;
-            if (rowID != -1) {
-                displayEditForm(rowID - 1);
+            if (errorType == "edit") {
+                var errorMsg = document.getElementById("edit_error");
+                errorMsg.innerText = error;
+                if (rowID != -1) {
+                    displayEditForm(rowID - 1);
+                }
+            } else {
+                var errorMsg = document.getElementById("add_error");
+                errorMsg.innerText = error;
+                if (rowID != -1) {
+                    document.getElementById('add-form').style.display='block';
+                }
             }
             <?php session_unset(); ?>
         }

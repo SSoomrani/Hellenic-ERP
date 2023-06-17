@@ -42,7 +42,7 @@
 
     return $contents;
  }
- function get_edit_error_info() {
+ function get_error_info() {
     $sql_error = "";
     if (isset($_SESSION['mysql_error'])) {
       $sql_error = $_SESSION['mysql_error'];
@@ -51,6 +51,17 @@
     if (isset($_SESSION['row_id'])) {
       $row_id = $_SESSION['row_id'];
     }
-    return array ($sql_error, $row_id);
+    $type = "";
+    if (isset($_SESSION['error_type'])) {
+      $type = $_SESSION['error_type'];
+    }
+    return array ($sql_error, $row_id, $type);
+ }
+ function get_submitted_data() {
+   $submitted_data = null;
+   if (isset($_SESSION['submitted_data'])) {
+      $submitted_data = $_SESSION['submitted_data'];
+   }
+   return $submitted_data;
  }
 ?>

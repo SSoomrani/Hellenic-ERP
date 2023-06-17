@@ -3,6 +3,7 @@
 
     $table_name = $_SESSION["current_table"] = "stocked_items";
 
+    require 'dbh/dbh.php';
     require 'dbh/initialise.php';
     require 'dbh/customer_data.php';
 
@@ -16,7 +17,8 @@
 
     $item_names = get_row_contents($conn, "SELECT `item_name` FROM `items`");
 
-    $edit_error_info = get_edit_error_info($conn, $table_name);
+    $error_info = get_error_info();
+    $submitted_data = get_submitted_data();
 ?>
 <!DOCTYPE html>
 <html>
@@ -52,8 +54,8 @@
         <?php include 'templates/edit_form.php'; ?>
         <?php include 'templates/forms.php'; ?>
     </div> 
-    <div id="add-form" class="popup-form">
-        <form class="popup-form-content-medium animate" action="dbh/manageData.php" method="post">
+    <div id="add-form-container" class="popup-form">
+        <form class="popup-form-content-medium animate" id="add-form" action="dbh/manageData.php" method="post">
             <input name="item_name" type="hidden" id="item-name"></input>
             <input type="hidden" name="table_name" value="<?php echo($table_name);?>">
             <div class="popup-form-container">
@@ -100,7 +102,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         loadElement("sidenav.html", "nav-placeholder");
         loadElement("widgets.html", "widget-placeholder", populateWidgets);
-        checkEditError();
+        checkError();
     });
 
 
@@ -119,17 +121,28 @@
         configureWidgets(4, "blank", "hourglass_empty", "blank", "blank", "blank");
     }
 
-    function checkEditError() {
-        var error = "<?php echo $edit_error_info[0]; ?>";
-        var rowID = "<?php echo $edit_error_info[1]; ?>";
+    function checkError() {
+        var error = "<?php echo $error_info[0]; ?>";
+        var rowID = "<?php echo $error_info[1]; ?>";
+        var errorType = "<?php echo $error_info[2]; ?>";
         if (error != "") {
-            var errorMsg = document.getElementById("edit_error");
-            errorMsg.innerText = error;
-            if (rowID != -1) {
-                displayEditForm(rowID - 1);
+            if (errorType == "edit") {
+                var errorMsg = document.getElementById("edit_error");
+                errorMsg.innerText = error;
+                if (rowID != -1) {
+                    displayEditForm(rowID - 1);
+                }
+            } else {
+                var elements = document.getElementById("add-form").elements;
+                var submittedData = <?php echo json_encode($submitted_data); ?>;
+                for (var i = 0, element; element = elements[i++];) {
+                    element.value = submittedData[i-2];
+                }
+                var errorMsg = document.getElementById("add_error");
+                errorMsg.innerText = error;
+                document.getElementById('add-form-container').style.display='block';
             }
             <?php session_unset(); ?>
         }
     }
-
 </script>

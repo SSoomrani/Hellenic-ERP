@@ -1,6 +1,7 @@
 function hideForm(data) {
     data.offsetParent.style.display = "none";
 }
+
 function cleanHideForm(form) {
     var elements = document.getElementById("added-elements");
     while (elements.firstChild) {
@@ -8,30 +9,31 @@ function cleanHideForm(form) {
     }
     form.offsetParent.style.display = "none";
 }
-function displayEditForm(n) {
-    document.getElementById('edit-form').style.display="block";
-    var table = document.getElementById("tableView");
+
+function displayEditForm(n, table) {
+    document.getElementById('edit-form').style.display = "block";
     var rows = table.rows;
     n++;
-    document.getElementById('identity').value = rows[n].getElementsByTagName("TD")[0].innerText;
-    for (var i = 0; i < table.rows[0].getElementsByTagName("TH").length; i++)
-    {
+    document.getElementById('edit-form-identity').value = rows[n].getElementsByTagName("TD")[0].innerText;
+    console.log(document.getElementById('edit-form-identity'));
+    for (var i = 0; i < table.rows[0].getElementsByTagName("TH").length; i++) {
         var columnName = rows[0].getElementsByTagName("TH")[i].innerText.replace(/\s/g, "").toUpperCase() + "_edit";
-        if (document.getElementById(columnName))
-        {
-        document.getElementById(columnName).value = rows[n].getElementsByTagName("TD")[i].innerText;
+        if (document.getElementById(columnName)) {
+            document.getElementById(columnName).value = rows[n].getElementsByTagName("TD")[i].innerText;
         }
     }
 }
+
 function displayDeleteForm(n) {
-    document.getElementById('delete-form').style.display="block";
+    document.getElementById('delete-form').style.display = "block";
     var table = document.getElementById("tableView");
     var rows = table.rows;
     n++;
     document.getElementById('delete_id').value = rows[n].getElementsByTagName("TD")[0].innerText;
 }
+
 function displayEmailForm(customerIdentifiers) {
-    document.getElementById('email-invoice-form').style.display="block";
+    document.getElementById('email-invoice-form').style.display = "block";
     document.getElementById('selectedCount').value = selected.length;
     if (selected.length == 0) {
         document.getElementById('select-error').innerText = "No invoices selected!";
