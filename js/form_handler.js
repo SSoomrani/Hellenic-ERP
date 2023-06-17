@@ -10,6 +10,11 @@ function cleanHideForm(form) {
     form.offsetParent.style.display = "none";
 }
 
+function displayErrorForm(errorMsg) {
+    document.getElementById('error-form-message').innerText = errorMsg;
+    document.getElementById('error-form').style.display = "block";
+}
+
 function displayEditForm(n, table) {
     document.getElementById('edit-form').style.display = "block";
     var rows = table.rows;
@@ -109,5 +114,12 @@ function displayEmailForm(customerIdentifiers) {
             td.appendChild(icon);
             tableRow.appendChild(td);
         }
+    }
+}
+
+function printForm() {
+    if (checkSelect()) {
+        document.getElementById("print-row-id").value = selected;
+        document.getElementById("print-form").submit();
     }
 }

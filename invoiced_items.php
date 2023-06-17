@@ -1,7 +1,7 @@
 <?php
     session_start();
 
-    $table_name = $_SESSION["current_table"] = "items";
+    $table_name = $_SESSION["current_table"] = "items_invoiced";
 
     require 'dbh/dbh.php';
     require 'dbh/initialise.php';
@@ -52,6 +52,8 @@
     <div id="form-placeholder">
         <!-- Include other forms that you want to include -->
         <?php include 'templates/forms.php'; ?>
+        <?php include 'templates/add_form.php'; ?>
+        <?php include 'templates/edit_form.php'; ?>
     </div>
 </body>
 

@@ -1,0 +1,77 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+body {
+    width: 21cm;
+    height: 29.7cm;
+    margin: 30mm 45mm 30mm 45mm;
+}
+
+.invoice {
+    background-color: #f9f9f9;
+    padding: 20px;
+    width: 100%;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+}
+
+.invoice .header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.invoice .address {
+    margin-bottom: 40px;
+}
+
+.invoice .address .company {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.invoice .address .address-details {
+    line-height: 1.5;
+}
+
+.invoice .details {
+    margin-bottom: 20px;
+}
+
+.invoice .details .detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.invoice .details .detail-row .label {
+    font-weight: bold;
+}
+
+.invoice .items {
+    margin-bottom: 20px;
+}
+
+.invoice .items .item-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.invoice .items .item-row .item-name {
+    flex-basis: 60%;
+}
+
+.invoice .items .item-row .item-quantity,
+.invoice .items .item-row .item-price {
+    flex-basis: 20%;
+    text-align: right;
+}
+
+.invoice .total {
+    text-align: right;
+    font-weight: bold;
+}

@@ -1,6 +1,15 @@
 var allSelected = false;
 var selected = [];
 
+function checkSelect() {
+    if (selected.length == 0) {
+        displayErrorForm("No items selected!");
+        return false;
+    }
+    return true;
+}
+
+
 function clearFilters() {
     var tables = getTables();
     document.getElementById("advanced-filter").value = "";

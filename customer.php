@@ -50,6 +50,8 @@
     </div>
     <div id="form-placeholder">
         <?php include 'templates/forms.php'; ?>
+        <?php include 'templates/add_form.php'; ?>
+        <?php include 'templates/edit_form.php'; ?>
     </div> 
 </body>
 </html>

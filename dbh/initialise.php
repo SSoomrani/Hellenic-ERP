@@ -39,7 +39,6 @@
  function get_row_contents($conn, $query_string) {
     $query = $conn->query($query_string);
     $contents = $query->fetch_all();
-
     return $contents;
  }
  function get_error_info() {
@@ -63,5 +62,12 @@
       $submitted_data = $_SESSION['submitted_data'];
    }
    return $submitted_data;
+ }
+
+ function get_invoice_info($conn, $invoice_id) {
+    $query_string = "SELECT invoices.title, invoices.due_date, invoices.net_value, invoices.total, invoices.vat, customers.forename, customers.surname, customers.delivery_address, customers.invoice_address FROM invoices INNER JOIN customers ON invoices.customer_id=customers.id WHERE invoices.id=". $invoice_id;
+    $query = $conn->query($query_string);
+    $contents = $query->fetch_all();
+    return $contents;
  }
 ?>

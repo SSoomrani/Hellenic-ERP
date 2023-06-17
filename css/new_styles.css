@@ -55,6 +55,10 @@ ul {
     padding: 10px;
 }
 
+.button-link {
+    color: black;
+}
+
 li {
     display: list-item;
     vertical-align: middle;
