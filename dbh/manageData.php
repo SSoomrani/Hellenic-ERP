@@ -1,14 +1,14 @@
 <?php
 session_start();
-
+echo($_POST['delete']);
+if ($_POST['delete'] == "") {
+    delete();
+}
 if (isset($_POST['add'])) {
     add();
 }
 if (isset($_POST['append'])) {
     append();
-}
-if (isset($_POST['delete'])) {
-    delete();
 }
 if (isset($_POST['change_table'])) {
     change_table();
@@ -133,8 +133,9 @@ function delete() {
         $_SESSION["mysql_error"] = "Error description: ". $conn -> error;
         $_SESSION["row_id"] = $_POST['id'];
     }
-    header("Location: {$_SERVER["HTTP_REFERER"]}");
-    exit();
+    var_dump($_SESSION);
+    //header("Location: {$_SERVER["HTTP_REFERER"]}");
+    //exit();
 }
 function change_table() {
     $table_name = $_REQUEST["q"];

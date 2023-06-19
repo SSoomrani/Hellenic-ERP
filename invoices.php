@@ -63,6 +63,7 @@
         <?php include 'templates/forms.php'; ?>
         <?php include 'templates/add_form.php'; ?>
         <?php include 'templates/edit_form.php'; ?>
+        <?php include 'templates/delete_form.php'; ?>
     </div>
     <div id="email-invoice-form" class="popup-form">
         <form class="popup-form-content animate" action="dbh/manageData.php" method="post">

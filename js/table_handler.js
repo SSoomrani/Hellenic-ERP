@@ -33,7 +33,7 @@ function filterTable() {
     var tables = getTables();
     var column = document.getElementById("column_select").value;
     var filter = document.getElementById("advanced-filter").value.toUpperCase();
-    for (k - 0; k < tables.length; k++) {
+    for (k = 0; k < tables.length; k++) {
         var rows = tables[k].rows;
         for (i = 1; i < rows.length; i++) {
             var item = rows[i].getElementsByTagName("TD")[column].innerHTML.toUpperCase();
@@ -196,27 +196,30 @@ function selectAll() {
     }
 }
 
-function deleteMode(table) {
-    var rows = table.rows;
-    var columnLength = rows[0].cells.length;
-    var button = document.getElementById("delete-button");
-    if (button == null) { // if the table is in edit mode
-        for (i = 1; i < rows.length; i++) {
-            var item = rows[i].getElementsByTagName("TD")[columnLength];
-            item.lastChild.innerHTML = "&#xe3c9;";
-            item.setAttribute("onclick", "displayEditForm(" + (i - 1) + ");");
+function deleteMode() {
+    var tables = getTables();
+    for (k = 0; k < tables.length; k++) {
+        var rows = tables[k].rows;
+        var columnLength = rows[0].cells.length;
+        var button = document.getElementById("delete-button");
+        if (button == null) { // if the table is in edit mode
+            for (i = 1; i < rows.length; i++) {
+                var item = rows[i].getElementsByTagName("TD")[columnLength];
+                item.lastChild.innerHTML = "&#xe3c9;";
+                item.setAttribute("onclick", "displayEditForm(" + (i - 1) + ");");
+            }
+            button = document.getElementById("edit-button");
+            button.id = "delete-button";
+            button.innerHTML = "&#xe872;"
+        } else {
+            for (i = 1; i < rows.length; i++) {
+                var item = rows[i].getElementsByTagName("TD")[columnLength];
+                item.lastChild.innerHTML = "&#xe872;";
+                item.setAttribute("onclick", "displayDeleteForm(" + (i - 1) + ");");
+            }
+            button.id = "edit-button";
+            button.innerHTML = "&#xe3c9;"
         }
-        button = document.getElementById("edit-button");
-        button.id = "delete-button";
-        button.innerHTML = "&#xe872;"
-    } else {
-        for (i = 1; i < rows.length; i++) {
-            var item = rows[i].getElementsByTagName("TD")[columnLength];
-            item.lastChild.innerHTML = "&#xe872;";
-            item.setAttribute("onclick", "displayDeleteForm(" + (i - 1) + ");");
-        }
-        button.id = "edit-button";
-        button.innerHTML = "&#xe3c9;"
     }
 }
 

@@ -15,9 +15,7 @@
         </div>
         <div class="popup-form-container-small popup-form-container-footer">
             <p onclick=hideForm(this);>Cancel</p>
-            <button name="delete" type="submit" style="float: right">
-                <p>Delete</p>
-            </button>
+            <button name="delete" type="submit" style="float: right"><p>Delete</p></button>
         </div>
     </form>
 </div>

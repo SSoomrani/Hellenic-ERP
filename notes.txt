@@ -1,0 +1,52 @@
+REMOVE ITEM_NAME FROM STOCKED ITEMS
+
+Data needed in print preview: invoice total, VAT, customer name, (customer email)?, items invoiced, invoice date, invoice title
+title, due date, net value, total, vat, forename, surname, delivery address invoice address
+
+SELECT
+  invoices.title,
+  invoices.due_date,
+  invoices.net_value,
+  invoices.total,
+  invoices.vat,
+  invoices.delivery_date,
+  customers.forename,
+  customers.surname,
+  customers.delivery_address,
+  customers.invoice_address,
+  items.item_name AS item_name,
+  items.list_price,
+  items_invoiced.quantity
+FROM
+  invoices
+  INNER JOIN customers ON invoices.customer_id = customers.id
+  INNER JOIN items_invoiced ON invoices.id = items_invoiced.invoice_id
+  INNER JOIN items ON items_invoiced.item_id = items.id
+WHERE
+  invoices.id = 1;
+
+
+CREATE TRIGGER update_net_value
+AFTER INSERT ON items_invoiced
+FOR EACH ROW
+BEGIN
+IF NEW.quantity IS NOT NULL OR NEW.list_price THEN
+UPDATE items_invoiced AS i
+JOIN items AS it ON i.item_id = it.item_id
+SET i.net_value = it.list_price * i.quantity
+WHERE i.item_id = NEW.item_id;
+END IF;
+END;
+
+
+CREATE TRIGGER net_value_quantity_change AFTER INSERT
+ON 
+
+
+Unit 15
+Hilsea Industrial Estate
+Limberline Spur
+Portsmouth
+PO3 5JW
+
+create table customer_address(id integer NOT NULL AUTO_INCREMENT COMMENT 'ID', customer_id integer NOT NULL COMMENT 'Customer ID', invoice_address_one varchar(255) NOT NULL COMMENT 'Invoice Address Line 1', invoice_address_two varchar(255) NOT NULL COMMENT 'Invoice Address Line 2', invoice_address_three varchar(255) NOT NULL COMMENT 'Invoice Address Line 3', PRIMARY KEY (ID), FOREIGN KEY (customer_id) REFERENCES customers(id));

@@ -6,11 +6,21 @@
     require 'dbh/customer_data.php';
 
     //Run queries for widgets from initialise.php
-    $data = get_invoice_info($conn, $_POST['print_row_id']);
-    $invoice_title = $data[0];
-    $due_date = $data[1];
-    $
-    $edit_error_info = get_error_info();
+    $invoice_info = get_invoice_info($conn, $_POST['print_row_id']);
+    $products_length = count($invoice_info);
+    $invoice_title = $invoice_info[0][0];
+    $due_date = $invoice_info[0][1];
+    $net_value = $invoice_info[0][2];
+    $vat = $invoice_info[0][4];
+    $delivery_date = $invoice_info[0][5];
+    $forename = $invoice_info[0][6];
+    $surnmame = $invoice_info[0][7];
+    $delivery_address = $invoice_info[0][8];
+    $invoice_address = $invoice_info[0][9];
+
+    $product_info = get_invoice_products($conn, $_POST['print_row_id']);
+
+    $total = 0;
 ?>
 <!DOCTYPE html>
 <html>
@@ -37,38 +47,57 @@
             <h2>Sales Invoice</h2>
         </div>
         <div class="address">
-            <div class="company">Your Company Name</div>
-            <div class="address-details">
-                123 Main Street<br>
-                City, State, ZIP<br>
-                Country
+            <div class="company">Hellenic Grocery LTD</div>
+            <div id="company-address" class="address-details">
+                Unit 15<br>
+                Hilsea Industrial Estate<br>
+                Limberline Spur<br>
+                Portsmouth<br>
+                PO3 5JW
             </div>
         </div>
         <div class="details">
             <div class="detail-row">
                 <span class="label">Invoice Number:</span>
-                <span class="value">INV-001</span>
+                <span id="invoice-title" class="value">INV-001</span>
             </div>
             <div class="detail-row">
                 <span class="label">Invoice Date:</span>
-                <span class="value">June 16, 2023</span>
+                <span class="value"><?php echo(date("d-m-Y")) ?></span>
             </div>
+            <br>
+        </div>
+        <div class="address">
+            <div class="address-details"><b>Invoice Address:</b></div>
+            <div class="address-details"><?php echo($invoice_address); ?></div>
         </div>
         <div class="items">
             <div class="item-row">
-                <span class="item-name">Product 1</span>
-                <span class="item-quantity">2</span>
-                <span class="item-price">$10.00</span>
+                <span class="item-header-name">Item Name</span>
+                <span class="item-header-details">Quantity</span>
+                <span class="item-header-details">Unit Price</span>
+                <span class="item-header-details">Net Amount</span>
             </div>
+            <hr class="dark horizontal my-0">
+            <br>
+            <?php foreach($product_info as $key => $row): ?>
             <div class="item-row">
-                <span class="item-name">Product 2</span>
-                <span class="item-quantity">3</span>
-                <span class="item-price">$15.00</span>
+                <span class="item-name"><?php echo($product_info[$key][0]); ?></span>
+                <span class="item-quantity"><?php echo($product_info[$key][2]); ?></span>
+                <span class="item-unit-price">£<?php echo($product_info[$key][1]); ?></span>
+                <span class="item-total">£<?php echo($product_info[$key][1] * $product_info[$key][2]); ?></span>
+                <?php $total += $product_info[$key][1] * $product_info[$key][2] ?>
             </div>
+            <?php endforeach; ?>
         </div>
         <div class="total">
             <span class="label">Total:</span>
-            <span class="value">$70.00</span>
+            <span class="value">£<?php echo($total); ?></span>
+        </div>
+        <br>
+        <div class="address">
+            <div class="address-details"><b>Estimated Delivery Date:</b></div>
+            <div class="address-details"><?php echo($delivery_date); ?></div>
         </div>
     </div>
 </body>
