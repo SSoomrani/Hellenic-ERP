@@ -19,6 +19,7 @@
 
     $error_info = get_error_info();
     $submitted_data = get_submitted_data();
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -102,6 +103,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         loadElement("sidenav.html", "nav-placeholder");
         loadElement("widgets.html", "widget-placeholder", populateWidgets);
+        loadElement("toolbar.html", "widget-placeholder");
         checkError();
     });
 

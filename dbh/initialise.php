@@ -72,21 +72,21 @@
     invoices.total,
     invoices.vat,
     invoices.delivery_date,
+    invoices.created_at,
     customers.forename,
     customers.surname,
-    customers.delivery_address,
-    customers.invoice_address,
-    items.item_name,
-    items.list_price,
-    items_invoiced.quantity,
+    customers.outstanding_balance,
     customer_address.invoice_address_one,
     customer_address.invoice_address_two,
-    customer_address.invoice_address_three
+    customer_address.invoice_address_three,
+    customer_address.invoice_postcode,
+    customer_address.delivery_address_one,
+    customer_address.delivery_address_two,
+    customer_address.delivery_address_three,
+    customer_address.delivery_postcode
   FROM
     invoices
     INNER JOIN customers ON invoices.customer_id = customers.id
-    INNER JOIN items_invoiced ON invoices.id = items_invoiced.invoice_id
-    INNER JOIN items ON items_invoiced.item_id = items.id
     INNER JOIN customer_address ON customer_address.customer_id = invoices.customer_id
   WHERE
     invoices.id = ". $invoice_id;
@@ -98,7 +98,8 @@ function get_invoice_products($conn, $invoice_id) {
    $query_string = "SELECT
    items.item_name,
    items.list_price,
-   items_invoiced.quantity
+   items_invoiced.quantity,
+   items_invoiced.vat_charge
  FROM
    invoices
    INNER JOIN items_invoiced ON invoices.id = items_invoiced.invoice_id
@@ -108,5 +109,10 @@ function get_invoice_products($conn, $invoice_id) {
    $query = $conn->query($query_string);
    $contents = $query->fetch_all();
    return $contents;
+}
+
+function echo_query($conn, $query) {
+  $query = $conn->query($query);
+  var_dump($query->fetch_all());
 }
 ?>

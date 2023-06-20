@@ -29,12 +29,10 @@ function displayEditForm(n, table) {
     }
 }
 
-function displayDeleteForm(n) {
+function displayDeleteForm(tableIndex, n) {
     document.getElementById('delete-form').style.display = "block";
-    var table = document.getElementById("tableView");
-    var rows = table.rows;
-    n++;
-    document.getElementById('delete_id').value = rows[n].getElementsByTagName("TD")[0].innerText;
+    var rows = getTables()[tableIndex].rows;
+    document.getElementById('delete_id').value = rows[n + 1].getElementsByTagName("TD")[0].innerText;
 }
 
 function displayEmailForm(customerIdentifiers) {

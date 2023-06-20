@@ -60,7 +60,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     loadElement("sidenav.html", "nav-placeholder");
-    loadElement("widgets.html", "widget-placeholder", populateWidgets);
+    loadElement("toolbar.html", "widget-placeholder");
 });
 
 checkEditError();

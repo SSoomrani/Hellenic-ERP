@@ -7,7 +7,10 @@
     require 'dbh/initialise.php';
     require 'dbh/customer_data.php';    
 
-    //Run queries for widgets from initialise.php
+    $invoices_due_today = get_row_count($conn, "SELECT * FROM invoices WHERE delivery_date = curdate()");
+    $invoices_due_week = get_row_count($conn, "SELECT * FROM invoices WHERE delivery_date < curdate() + 7 AND delivery_date >= curdate()");
+    $products_expiring_month = get_row_count($conn, "SELECT * FROM stocked_items WHERE expiry_date >= curdate() AND expiry_date < curdate() + INTERVAL 1 MONTH");
+    $products_expiring_week = get_row_count($conn, "SELECT * FROM stocked_items WHERE expiry_date >= curdate() AND expiry_date < curdate() + INTERVAL 1 WEEK");
 
     $edit_error_info = get_error_info();
 ?>
@@ -55,18 +58,19 @@
     document.addEventListener('DOMContentLoaded', function() {
         loadElement("sidenav.html", "nav-placeholder");
         loadElement("widgets.html", "widget-placeholder", populateWidgets);
+        loadElement("toolbar.html", "widget-placeholder");
         searchTableFilter(getTables()[0], findColumnIndexByName(getTables()[0], "Delivery Date"), new Date().toJSON().slice(0,10), true);
         searchTableDateFilter(getTables()[1], findColumnIndexByName(getTables()[1], "Expiry Date"), 1);
         clearEditColumns(getTables());
+        removeEmptyTable();
     });
 
     checkError();
 
-
     function populateWidgets()
     {
-        configureWidgets(1, "blank", "hourglass_empty", "blank", "blank", "blank");
-        configureWidgets(2, "blank", "hourglass_empty", "blank", "blank", "blank");
+        configureWidgets(1, "Invoices Due Today", "outgoing_mail", "<?php echo($invoices_due_today); ?>", "<?php echo($invoices_due_week); ?>", " due this week.");
+        configureWidgets(2, "Products Expiring This Week", "hourglass_empty", "<?php echo($products_expiring_week); ?>", "<?php echo($products_expiring_month); ?>", " expiring this month.");
         configureWidgets(3, "blank", "hourglass_empty", "blank", "blank", "blank");
         configureWidgets(4, "blank", "hourglass_empty", "blank", "blank", "blank");
         fixFilter()

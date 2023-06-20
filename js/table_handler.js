@@ -206,7 +206,7 @@ function deleteMode() {
             for (i = 1; i < rows.length; i++) {
                 var item = rows[i].getElementsByTagName("TD")[columnLength];
                 item.lastChild.innerHTML = "&#xe3c9;";
-                item.setAttribute("onclick", "displayEditForm(" + (i - 1) + ");");
+                item.setAttribute("onclick", "displayEditForm(" + k + ", " + (i - 1) + ");");
             }
             button = document.getElementById("edit-button");
             button.id = "delete-button";
@@ -215,7 +215,7 @@ function deleteMode() {
             for (i = 1; i < rows.length; i++) {
                 var item = rows[i].getElementsByTagName("TD")[columnLength];
                 item.lastChild.innerHTML = "&#xe872;";
-                item.setAttribute("onclick", "displayDeleteForm(" + (i - 1) + ");");
+                item.setAttribute("onclick", "displayDeleteForm(" + k + ", " + (i - 1) + ");");
             }
             button.id = "edit-button";
             button.innerHTML = "&#xe3c9;"
@@ -259,6 +259,14 @@ function getTables() {
     return document.getElementsByTagName("TABLE");
 }
 
-function removeOnClicks() {
-
+function removeEmptyTable() {
+    var tables = getTables();
+    console.log(tables);
+    for (k = 0; k < tables.length; k++) {
+        console.log(tables[k].rows.length);
+        if (tables[k].rows.length < 2) {
+            console.log("Removing");
+            tables[k].remove();
+        }
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 session_start();
-echo($_POST['delete']);
-if ($_POST['delete'] == "") {
+
+if (isset($_POST['delete'])) {
     delete();
 }
 if (isset($_POST['add'])) {
@@ -133,9 +133,9 @@ function delete() {
         $_SESSION["mysql_error"] = "Error description: ". $conn -> error;
         $_SESSION["row_id"] = $_POST['id'];
     }
-    var_dump($_SESSION);
-    //header("Location: {$_SERVER["HTTP_REFERER"]}");
-    //exit();
+    var_dump($_POST);
+    header("Location: {$_SERVER["HTTP_REFERER"]}");
+    exit();
 }
 function change_table() {
     $table_name = $_REQUEST["q"];

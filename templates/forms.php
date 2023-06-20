@@ -10,7 +10,7 @@
     <form class="popup-form-content-small animate" action="dbh/manageData.php" method="post">
         <input type="hidden" id="delete_id" name="id" value="">
         <input type="hidden" name="table_name" value="<?php echo($table_name);?>">
-        <div class="popup-form-container" id="editForm">
+        <div class="popup-form-container">
             <p>Are you sure you want to delete?</p>
         </div>
         <div class="popup-form-container-small popup-form-container-footer">
