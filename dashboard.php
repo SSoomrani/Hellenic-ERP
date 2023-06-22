@@ -60,7 +60,7 @@
         loadElement("widgets.html", "widget-placeholder", populateWidgets);
         loadElement("toolbar.html", "widget-placeholder");
         searchTableFilter(getTables()[0], findColumnIndexByName(getTables()[0], "Delivery Date"), new Date().toJSON().slice(0,10), true);
-        searchTableDateFilter(getTables()[1], findColumnIndexByName(getTables()[1], "Expiry Date"), 1);
+        searchTableDateFilter(getTables()[1], findColumnIndexByName(getTables()[1], "Expiry Date"), 1, true);
         clearEditColumns(getTables());
         removeEmptyTable();
     });
@@ -71,7 +71,7 @@
     {
         configureWidgets(1, "Invoices Due Today", "outgoing_mail", "<?php echo($invoices_due_today); ?>", "<?php echo($invoices_due_week); ?>", " due this week.");
         configureWidgets(2, "Products Expiring This Week", "hourglass_empty", "<?php echo($products_expiring_week); ?>", "<?php echo($products_expiring_month); ?>", " expiring this month.");
-        configureWidgets(3, "blank", "hourglass_empty", "blank", "blank", "blank");
+        configureWidgets(3, "Income Today", "payments", "blank", "blank", "blank");
         configureWidgets(4, "blank", "hourglass_empty", "blank", "blank", "blank");
         fixFilter()
     }

@@ -14,6 +14,11 @@
     $editable_field_names = $table_info[3];
 
     $rows = get_table_contents($conn, $table_name);
+    $types = array_reverse(get_types($conn, $table_name));
+    var_dump($types);
+
+    $customer_names = get_row_contents($conn, "SELECT CONCAT(forename, ' ', surname) AS full_name FROM `customers`");
+    $customer_ids = get_row_contents($conn, "SELECT id FROM `customers`");
 
     $amount_pending = get_row_count($conn, "SELECT * FROM `invoices` WHERE `status` = 'pending'");
     $amount_pending_week = get_row_count($conn, "SELECT * FROM `invoices` WHERE YEARWEEK(created_at) = YEARWEEK(CURDATE()) AND `status` = 'pending'");
@@ -61,8 +66,50 @@
     </div>
     <div id="form-placeholder">
         <?php include 'templates/forms.php'; ?>
-        <?php include 'templates/add_form.php'; ?>
         <?php include 'templates/edit_form.php'; ?>
+    </div>
+    <div id="add-form-container" class="popup-form">
+        <form class="popup-form-content animate" id="add-form" action="dbh/manageData.php" method="post">
+            <input name="item_name" type="hidden" id="item-name"></input>
+            <input type="hidden" name="table_name" value="<?php echo($table_name);?>">
+            <div class="popup-form-container">
+                <p id="add_error"></p>
+                <br>
+                <?php foreach($editable_formatted_names as $key => $value): ?>
+                    <?php if ($editable_formatted_names[$key] != "Item ID"): ?>
+                        <label><?php echo "$editable_formatted_names[$key]: "; ?></label>
+                        <br>
+                        <?php if (in_array($editable_field_names[$key], $required_fields)): ?>
+                            <?php if ($editable_field_names[$key] == "customer_id"): ?>
+                                <select name="item_id" class="form-control" id="item-name-select" placeholder="Enter item name">
+                                    <?php foreach($customer_names as $key => $value): ?>
+                                        <option value="<?php echo($customer_ids[$key]); ?>"><?php echo($customer_names[$key][0]); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            <?php elseif ($editable_field_names[$key] == "status"): ?>
+                                <select name="status" class="form-control" id="status-select" placeholder="Select invoice status">
+                                    <option value="Pending">Pending</option> 
+                                    <option value="Complete">Complete</option> 
+                                    <option value="Overdue">Overdue</option> 
+                                </select>
+                            <?php elseif ($types[$key] == "date"): ?>
+                                <input placeholder="Enter date: yyyy/mm/dd" class="form-control" required id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo($editable_field_names[$key]); ?>">
+                            <?php elseif ($editable_field_names[$key] == "VAT" || $editable_field_names[$key] == "net_value"): ?>
+                                <input onkeyup="calculateTotal()" class="form-control" required id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo($editable_field_names[$key]); ?>">
+                            <?php else: ?>
+                                <input class="form-control" required id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo($editable_field_names[$key]); ?>">
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <input class="form-control" id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo($editable_field_names[$key]); ?>">
+                        <?php endif; ?>
+                    <?php endif?>
+                <?php endforeach; ?>
+            </div>
+            <div class="popup-form-container-small popup-form-container-footer">
+            <p onclick=hideForm(this);>Close</p>
+            <button name="add" type="submit" style="float: right"><p>Submit</p></button>
+            </div>
+        </form>
     </div>
     <div id="email-invoice-form" class="popup-form">
         <form class="popup-form-content animate" action="dbh/manageData.php" method="post">
@@ -88,6 +135,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     loadElement("sidenav.html", "nav-placeholder");
     loadElement("widgets.html", "widget-placeholder", populateWidgets);
+    loadElement("toolbar.html", "widget-placeholder");
 });
 
 checkEditError();
@@ -104,28 +152,11 @@ function populateWidgets() {
     dayDifferenceTotal();
 }
 
-function displayOverdue() {
-    document.getElementById("column_select").value = "3";
-    document.getElementById("advanced-filter").value = "overdue";
-    filterTable();
-    var table = document.getElementById("tableView");
-    var rows = table.rows;
-    var columnLength = rows[0].cells.length - 1;
-    for (i = 0; i < columnLength - 1; i++) {
-        if (rows[0].getElementsByTagName("TH")[i].innerText == "Status" || rows[0].getElementsByTagName("TH")[i]
-            .innerText == "Print Status") {
-            rows[0].getElementsByTagName("TH")[i].style.display = "none";
-            for (k = 1; k < rows.length; k++) {
-                rows[k].getElementsByTagName("TD")[i].style.display = "none";
-            }
-        }
-    }
-    rows[0].getElementsByTagName("TH")[0].innerText = "Select All";
-    for (i = 1; i < rows.length; i++) {
-        rows[i].getElementsByTagName("TD")[columnLength + 1].lastChild.innerHTML = "&#xe0e1;";
-        var array = <?php echo json_encode($customer_identifiers); ?>;
-        rows[i].getElementsByTagName("TD")[columnLength + 1].setAttribute("onclick", "displayEmailForm(" + JSON
-            .stringify(array) + ");");
+function calculateTotal() {
+    var netValue = document.getElementById("NetValue").value;
+    var VAT = document.getElementById("VAT").value;
+    if (isInt(netValue) && isInt(VAT)) {
+        document.getElementById("Total").value = parseInt(netValue) + parseInt(VAT);
     }
 }
 
@@ -158,6 +189,30 @@ function dayDifferenceTotal() {
         document.getElementById("widget-text-value-1").lastChild.textContent = " less than yesterday";
         element.innerText = Math.abs(difference);
         element.classList.add('text-unsuccess');
+    }
+}
+function displayOverdue() {
+    document.getElementById("column_select").value = "3";
+    document.getElementById("advanced-filter").value = "overdue";
+    filterTable();
+    var table = document.getElementById("tableView");
+    var rows = table.rows;
+    var columnLength = rows[0].cells.length - 1;
+    for (i = 0; i < columnLength - 1; i++) {
+        if (rows[0].getElementsByTagName("TH")[i].innerText == "Status" || rows[0].getElementsByTagName("TH")[i]
+            .innerText == "Print Status") {
+            rows[0].getElementsByTagName("TH")[i].style.display = "none";
+            for (k = 1; k < rows.length; k++) {
+                rows[k].getElementsByTagName("TD")[i].style.display = "none";
+            }
+        }
+    }
+    rows[0].getElementsByTagName("TH")[0].innerText = "Select All";
+    for (i = 1; i < rows.length; i++) {
+        rows[i].getElementsByTagName("TD")[columnLength + 1].lastChild.innerHTML = "&#xe0e1;";
+        var array = <?php echo json_encode($customer_identifiers); ?>;
+        rows[i].getElementsByTagName("TD")[columnLength + 1].setAttribute("onclick", "displayEmailForm(" + JSON
+            .stringify(array) + ");");
     }
 }
 </script>

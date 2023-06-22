@@ -64,10 +64,10 @@ function searchTableFilter(table, column, filter, d) {
     }
 }
 
-function searchTableDateFilter(table, column, filter) {
+function searchTableDateFilter(table, column, filter, d) {
     var currentDate = new Date();
     var currentYear = currentDate.getFullYear();
-    var currentMonth = currentDate.getMonth() + 1;
+    var currentMonth = currentDate.getMonth() + filter;
     var currentDay = currentDate.getDate();
     var rows = table.rows;
     for (i = 1; i < rows.length; i++) {
@@ -79,7 +79,12 @@ function searchTableDateFilter(table, column, filter) {
         if (monthDiff <= 1 && (inputDay <= currentDay || monthDiff < 1)) {
             rows[i].style.display = "";
         } else {
-            rows[i].style.display = "none";
+            if (d) {
+                table.deleteRow(i);
+                i--;
+            } else {
+                rows[i].style.display = "none";
+            }
         }
     }
 }
@@ -261,12 +266,15 @@ function getTables() {
 
 function removeEmptyTable() {
     var tables = getTables();
-    console.log(tables);
+    console.log(tables[0]);
+    console.log(tables[1]);
+        // console.log(tables.length);
     for (k = 0; k < tables.length; k++) {
         console.log(tables[k].rows.length);
         if (tables[k].rows.length < 2) {
-            console.log("Removing");
+            console.log("Removing: " + k);
             tables[k].remove();
+            k = k - 1;
         }
     }
 }
