@@ -115,9 +115,19 @@ function echo_query($conn, $query) {
   $query = $conn->query($query);
   var_dump($query->fetch_all());
 }
+
+function run_query($conn, $query) {
+  $conn->query($query);
+}
+
 function get_types($conn, $table_name) {
-  $query = $conn->query("select DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = '".$table_name."'");
+  $query = $conn->query("SHOW FIELDS FROM ".$table_name);
   $contents = $query->fetch_all();
-  return $contents;
+  foreach($contents as $item) {
+    if ($item[5] == null) {
+      $types[] = $item[1];
+    }
+  }
+  return $types;
 }
 ?>

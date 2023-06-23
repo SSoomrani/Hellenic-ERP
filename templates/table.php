@@ -10,7 +10,7 @@
     <tr>
         <?php foreach($formatted_names as $key => $value): ?>
             <?php if($key != 0): ?>
-                <th onclick="sortTable(<?php echo $key; ?>)"><?php echo $formatted_names[$key]; ?></th>
+                <th onclick="sortTable(this.parentNode.parentNode.parentNode, <?php echo $key; ?>)"><?php echo $formatted_names[$key]; ?></th>
             <?php else: ?>
                 <th onclick="selectAll()"><?php echo $formatted_names[$key]; ?></th>
             <?php endif; ?>

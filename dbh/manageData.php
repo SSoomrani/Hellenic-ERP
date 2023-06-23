@@ -42,6 +42,7 @@ function add() {
     $field_names = array();
     $submitted_data = array();
     $table_name = $_POST['table_name'];
+
     $query = $conn->query('SHOW FULL COLUMNS FROM '. $table_name);
     while ($row = $query->fetch_assoc()) {
         if ($row['Extra'] == null) {

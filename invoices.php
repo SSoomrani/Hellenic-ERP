@@ -14,12 +14,11 @@
     $editable_field_names = $table_info[3];
 
     $rows = get_table_contents($conn, $table_name);
-    $types = array_reverse(get_types($conn, $table_name));
-    var_dump($types);
-
+    $types = get_types($conn, $table_name);
+    run_query($conn, "SET information_schema_stats_expiry = 0");
+    $next_ID = get_row_contents($conn, "SELECT auto_increment from information_schema.tables WHERE table_name = 'invoices' AND table_schema = DATABASE()")[0][0];
     $customer_names = get_row_contents($conn, "SELECT CONCAT(forename, ' ', surname) AS full_name FROM `customers`");
     $customer_ids = get_row_contents($conn, "SELECT id FROM `customers`");
-
     $amount_pending = get_row_count($conn, "SELECT * FROM `invoices` WHERE `status` = 'pending'");
     $amount_pending_week = get_row_count($conn, "SELECT * FROM `invoices` WHERE YEARWEEK(created_at) = YEARWEEK(CURDATE()) AND `status` = 'pending'");
     $amount_pending_today = get_row_count($conn, "SELECT * FROM invoices WHERE DATE(created_at) = DATE(CURDATE()) AND `status` = 'pending'");
@@ -81,11 +80,13 @@
                         <br>
                         <?php if (in_array($editable_field_names[$key], $required_fields)): ?>
                             <?php if ($editable_field_names[$key] == "customer_id"): ?>
-                                <select name="item_id" class="form-control" id="item-name-select" placeholder="Enter item name">
+                                <select name="customer_id" class="form-control" id="item-name-select" placeholder="Enter item name">
                                     <?php foreach($customer_names as $key => $value): ?>
-                                        <option value="<?php echo($customer_ids[$key]); ?>"><?php echo($customer_names[$key][0]); ?></option>
+                                        <option value="<?php echo($customer_ids[$key][0]); ?>"><?php echo($customer_names[$key][0]); ?></option>
                                     <?php endforeach; ?>
                                 </select>
+                            <?php elseif ($editable_field_names[$key] == "title"): ?>
+                                <input value="INV<?php echo $next_ID; ?>" class="form-control" required id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo $editable_field_names[$key]; ?>"/>
                             <?php elseif ($editable_field_names[$key] == "status"): ?>
                                 <select name="status" class="form-control" id="status-select" placeholder="Select invoice status">
                                     <option value="Pending">Pending</option> 
@@ -166,7 +167,7 @@ function notifyOverdueInvoices() {
 
 function checkEditError() {
     var error = "<?php echo $edit_error_info[0]; ?>";
-    var rowID = "<?php echo $edit_error_info[1]; ?>"
+    var rowID = "<?php echo $edit_error_info[1]; ?>";
     if (error != "") {
         var errorMsg = document.getElementById("edit_error");
         errorMsg.innerText = error;

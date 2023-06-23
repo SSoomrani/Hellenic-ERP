@@ -1,5 +1,5 @@
 function isColumnAllIntegers(table, columnIndex) {
-    var rows = table.getElementsByTagName('tr');
+    var rows = table.rows;
     for (var i = 1; i < rows.length; i++) {
         var cells = rows[i].getElementsByTagName('td');
         var cellValue = cells[columnIndex].textContent.trim();
