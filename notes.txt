@@ -50,3 +50,6 @@ Portsmouth
 PO3 5JW
 
 create table customer_address(id integer NOT NULL AUTO_INCREMENT COMMENT 'ID', customer_id integer NOT NULL COMMENT 'Customer ID', invoice_address_one varchar(255) NOT NULL COMMENT 'Invoice Address Line 1', invoice_address_two varchar(255) NOT NULL COMMENT 'Invoice Address Line 2', invoice_address_three varchar(255) NOT NULL COMMENT 'Invoice Address Line 3', PRIMARY KEY (ID), FOREIGN KEY (customer_id) REFERENCES customers(id));
+
+outstanding balance for when printed invoice update automatically on trigger
+both created date and delivery date
