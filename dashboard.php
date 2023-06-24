@@ -11,6 +11,7 @@
     $invoices_due_week = get_row_count($conn, "SELECT * FROM invoices WHERE delivery_date < curdate() + 7 AND delivery_date >= curdate()");
     $products_expiring_month = get_row_count($conn, "SELECT * FROM stocked_items WHERE expiry_date >= curdate() AND expiry_date < curdate() + INTERVAL 1 MONTH");
     $products_expiring_week = get_row_count($conn, "SELECT * FROM stocked_items WHERE expiry_date >= curdate() AND expiry_date < curdate() + INTERVAL 1 WEEK");
+    $income_today = get_
 
     $edit_error_info = get_error_info();
 ?>

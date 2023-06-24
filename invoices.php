@@ -156,8 +156,12 @@ function populateWidgets() {
 function calculateTotal() {
     var netValue = document.getElementById("NetValue").value;
     var VAT = document.getElementById("VAT").value;
-    if (isInt(netValue) && isInt(VAT)) {
-        document.getElementById("Total").value = parseInt(netValue) + parseInt(VAT);
+    if (isFloat(netValue) || isInt(netValue)) {
+        if (!isFloat(VAT) || !isInt(VAT)) {
+            VAT = (netValue * 0.2).toFixed(2);
+            document.getElementById("VAT").value = VAT;
+        }
+        document.getElementById("Total").value = (parseFloat(netValue) + parseFloat(VAT)).toFixed(2);
     }
 }
 
