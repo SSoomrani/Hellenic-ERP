@@ -21,7 +21,8 @@ function isInt(value) {
         parseInt(Number(value)) == value &&
         !isNaN(parseInt(value, 10));
 }
+
 function isFloat(value) {
     const floatValue = parseFloat(value);
-    return !isNaN(floatValue) && floatValue % 1 !== 0;
-} 
+    return Number.isFinite(floatValue) && Math.floor(floatValue) !== floatValue;
+}

@@ -68,52 +68,66 @@
         <?php include 'templates/edit_form.php'; ?>
     </div>
     <div id="add-form-container" class="popup-form">
-        <form class="popup-form-content animate" id="add-form" action="dbh/manageData.php" method="post">
+        <form class="popup-form-content animate" id="add-form" action="dbh/manage_data.php" method="post">
             <input name="item_name" type="hidden" id="item-name"></input>
             <input type="hidden" name="table_name" value="<?php echo($table_name);?>">
             <div class="popup-form-container">
+                <input id="smart-mode" name="smart-mode" style="float: right" type="checkbox" checked>
+                <label for="smart-mode" style="float: right">Smart Mode</label><br>
                 <p id="add_error"></p>
                 <br>
                 <?php foreach($editable_formatted_names as $key => $value): ?>
-                    <?php if ($editable_formatted_names[$key] != "Item ID"): ?>
-                        <label><?php echo "$editable_formatted_names[$key]: "; ?></label>
-                        <br>
-                        <?php if (in_array($editable_field_names[$key], $required_fields)): ?>
-                            <?php if ($editable_field_names[$key] == "customer_id"): ?>
-                                <select name="customer_id" class="form-control" id="item-name-select" placeholder="Enter item name">
-                                    <?php foreach($customer_names as $key => $value): ?>
-                                        <option value="<?php echo($customer_ids[$key][0]); ?>"><?php echo($customer_names[$key][0]); ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            <?php elseif ($editable_field_names[$key] == "title"): ?>
-                                <input value="INV<?php echo $next_ID; ?>" class="form-control" required id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo $editable_field_names[$key]; ?>"/>
-                            <?php elseif ($editable_field_names[$key] == "status"): ?>
-                                <select name="status" class="form-control" id="status-select" placeholder="Select invoice status">
-                                    <option value="Pending">Pending</option> 
-                                    <option value="Complete">Complete</option> 
-                                    <option value="Overdue">Overdue</option> 
-                                </select>
-                            <?php elseif ($types[$key] == "date"): ?>
-                                <input placeholder="Enter date: yyyy/mm/dd" class="form-control" required id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo($editable_field_names[$key]); ?>">
-                            <?php elseif ($editable_field_names[$key] == "VAT" || $editable_field_names[$key] == "net_value"): ?>
-                                <input onkeyup="calculateTotal()" class="form-control" required id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo($editable_field_names[$key]); ?>">
-                            <?php else: ?>
-                                <input class="form-control" required id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo($editable_field_names[$key]); ?>">
-                            <?php endif; ?>
-                        <?php else: ?>
-                            <input class="form-control" id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo($editable_field_names[$key]); ?>">
-                        <?php endif; ?>
-                    <?php endif?>
+                <?php if ($editable_formatted_names[$key] != "Item ID"): ?>
+                <label><?php echo "$editable_formatted_names[$key]: "; ?></label>
+                <br>
+                <?php if (in_array($editable_field_names[$key], $required_fields)): ?>
+                <?php if ($editable_field_names[$key] == "customer_id"): ?>
+                <select name="customer_id" class="form-control" id="item-name-select" placeholder="Enter item name">
+                    <?php foreach($customer_names as $key => $value): ?>
+                    <option value="<?php echo($customer_ids[$key][0]); ?>"><?php echo($customer_names[$key][0]); ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+                <?php elseif ($editable_field_names[$key] == "title"): ?>
+                <input value="INV<?php echo $next_ID; ?>" class="form-control" required
+                    id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text"
+                    name="<?php echo $editable_field_names[$key]; ?>" />
+                <?php elseif ($editable_field_names[$key] == "status"): ?>
+                <select name="status" class="form-control" id="status-select" placeholder="Select invoice status">
+                    <option value="Pending">Pending</option>
+                    <option value="Complete">Complete</option>
+                    <option value="Overdue">Overdue</option>
+                </select>
+                <?php elseif ($types[$key] == "date"): ?>
+                <input placeholder="Enter date: yyyy/mm/dd" class="form-control" required
+                    id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text"
+                    name="<?php echo($editable_field_names[$key]); ?>">
+                <?php elseif ($editable_field_names[$key] == "VAT" || $editable_field_names[$key] == "net_value"): ?>
+                <input onkeyup="calculateTotal()" class="form-control" required
+                    id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text"
+                    name="<?php echo($editable_field_names[$key]); ?>">
+                <?php else: ?>
+                <input class="form-control" required
+                    id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text"
+                    name="<?php echo($editable_field_names[$key]); ?>">
+                <?php endif; ?>
+                <?php else: ?>
+                <input class="form-control" id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>"
+                    type="text" name="<?php echo($editable_field_names[$key]); ?>">
+                <?php endif; ?>
+                <?php endif?>
                 <?php endforeach; ?>
             </div>
             <div class="popup-form-container-small popup-form-container-footer">
-            <p onclick=hideForm(this);>Close</p>
-            <button name="add" type="submit" style="float: right"><p>Submit</p></button>
+                <p onclick=hideForm(this);>Close</p>
+                <button name="add" type="submit" style="float: right">
+                    <p>Submit</p>
+                </button>
             </div>
         </form>
     </div>
     <div id="email-invoice-form" class="popup-form">
-        <form class="popup-form-content animate" action="dbh/manageData.php" method="post">
+        <form class="popup-form-content animate" action="dbh/manage_data.php" method="post">
             <input id="selectedCount" type="hidden" value=""></input>
             <div id="email-form-container" class="popup-form-container">
                 <p class="text-unsuccess" id="select-error"></p>
@@ -145,7 +159,7 @@ function populateWidgets() {
     configureWidgets(1, "Today's Invoices", "receipt_long", <?php echo($amount_today) ?>, 10, " more than yesterday");
     configureWidgets(2, "Pending Invoices", "timer", <?php echo($amount_pending) ?>,
         <?php echo($amount_pending_week) ?>, " from this week");
-    configureWidgets(3, "Outstainding Invoices", "markunread_mailbox", <?php echo($amount_overdue) ?>,
+    configureWidgets(3, "Outstanding Invoices", "markunread_mailbox", <?php echo($amount_overdue) ?>,
         <?php echo($amount_overdue_week) ?>, " from this week");
     configureWidgets(4, "Completed Today", "check", <?php echo($amount_completed_today); ?>,
         <?php echo($amount_completed_week); ?>, " from this week");
@@ -154,14 +168,16 @@ function populateWidgets() {
 }
 
 function calculateTotal() {
-    var netValue = document.getElementById("NetValue").value;
-    var VAT = document.getElementById("VAT").value;
-    if (isFloat(netValue) || isInt(netValue)) {
-        if (!isFloat(VAT) || !isInt(VAT)) {
-            VAT = (netValue * 0.2).toFixed(2);
-            document.getElementById("VAT").value = VAT;
+    if (document.getElementById("smart-mode").checked) {
+        var netValue = document.getElementById("NetValue").value;
+        var VAT = document.getElementById("VAT").value;
+        if ((isFloat(netValue) || isInt(netValue)) && !isNaN(netValue)) {
+            if (!isFloat(VAT) || !isInt(VAT)) {
+                VAT = (netValue * 0.2).toFixed(2);
+                document.getElementById("VAT").value = VAT;
+            }
+            document.getElementById("Total").value = (parseFloat(netValue) + parseFloat(VAT)).toFixed(2);
         }
-        document.getElementById("Total").value = (parseFloat(netValue) + parseFloat(VAT)).toFixed(2);
     }
 }
 
@@ -196,11 +212,12 @@ function dayDifferenceTotal() {
         element.classList.add('text-unsuccess');
     }
 }
+
 function displayOverdue() {
     document.getElementById("column_select").value = "3";
     document.getElementById("advanced-filter").value = "overdue";
     filterTable();
-    var table = document.getElementById("tableView");
+    var table = getTables()[0];
     var rows = table.rows;
     var columnLength = rows[0].cells.length - 1;
     for (i = 0; i < columnLength - 1; i++) {
@@ -219,5 +236,9 @@ function displayOverdue() {
         rows[i].getElementsByTagName("TD")[columnLength + 1].setAttribute("onclick", "displayEmailForm(" + JSON
             .stringify(array) + ");");
     }
+}
+
+function changeSmartMode() {
+
 }
 </script>

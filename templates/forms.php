@@ -7,7 +7,7 @@
     $required_fields = $table_info[4];
 ?>
 <div id="delete-form" class="popup-form">
-    <form class="popup-form-content-small animate" action="dbh/manageData.php" method="post">
+    <form class="popup-form-content-small animate" action="dbh/manage_data.php" method="post">
         <input type="hidden" id="delete_id" name="id" value="">
         <input type="hidden" name="table_name" value="<?php echo($table_name);?>">
         <div class="popup-form-container">
@@ -20,7 +20,7 @@
     </form>
 </div>
 <div id="filter-form" class="popup-form">
-    <form class="popup-form-content-medium animate" action="dbh/manageData.php" method="post">
+    <form class="popup-form-content-medium animate" action="dbh/manage_data.php" method="post">
         <div class="popup-form-container">
             <h2>Advanced Filter</h2>
             <label>Select Column</label>

@@ -56,7 +56,7 @@
         <?php include 'templates/forms.php'; ?>
     </div> 
     <div id="add-form-container" class="popup-form">
-        <form class="popup-form-content-medium animate" id="add-form" action="dbh/manageData.php" method="post">
+        <form class="popup-form-content-medium animate" id="add-form" action="dbh/manage_data.php" method="post">
             <input name="item_name" type="hidden" id="item-name"></input>
             <input type="hidden" name="table_name" value="<?php echo($table_name);?>">
             <div class="popup-form-container">

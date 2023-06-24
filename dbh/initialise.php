@@ -130,4 +130,12 @@ function get_types($conn, $table_name) {
   }
   return $types;
 }
+
+function sum_values($values) {
+  $total = 0;
+  foreach ($values as $value) {
+    $total += $value[0];
+  }
+  return $total;
+}
 ?>

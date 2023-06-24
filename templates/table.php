@@ -17,12 +17,12 @@
         <?php endforeach; ?>
     </tr>
     <?php foreach($rows as $key => $row): ?>
-        <tr onclick="select(this)">
+        <tr>
             <?php foreach($field_names as $field_key => $field_name): ?>
                 <?php if ($field_key == 0): ?>
-                    <td><?php echo $rows[$key][$field_names[$field_key]]; ?></td>
+                    <td onclick="select(this.parentNode)"><?php echo $rows[$key][$field_names[$field_key]]; ?></td>
                 <?php else: ?>
-                    <td><?php echo $rows[$key][$field_name]; ?></td>
+                    <td onclick="select(this.parentNode)"><?php echo $rows[$key][$field_name]; ?></td>
                 <?php endif; ?>
             <?php endforeach; ?>
             <td class="edit-column" onclick="displayEditForm(<?php echo($key); ?>, this.parentNode.parentNode.parentNode)"><i class="inline-icon material-icons">edit</i></td>

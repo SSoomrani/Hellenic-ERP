@@ -125,16 +125,33 @@ function append() {
 function delete() {
     require 'dbh.php';
     $tableName = $_POST['table_name'];
-    $id = $_POST['id'];
-    $query_string = "DELETE FROM $tableName WHERE ID = '$id'";
-    try {
-        $conn->query($query_string);
+    $ids = $_POST['id'];
+    if (str_contains($ids, ",")) {
+        $id_array = explode(',', $ids);
+        var_dump($id_array);
+        foreach ($id_array as $id) {
+            $query_string = "DELETE FROM $tableName WHERE ID = '$id'";
+            try {
+                $conn->query($query_string);
+            }
+            catch (Exception $e) {
+                $_SESSION["mysql_error"] = "Error description: ". $conn -> error;
+                $_SESSION["row_id"] = $_POST['id'];
+                header("Location: {$_SERVER["HTTP_REFERER"]}");
+                exit();
+            }
+        }
     }
-    catch (Exception $e) {
-        $_SESSION["mysql_error"] = "Error description: ". $conn -> error;
-        $_SESSION["row_id"] = $_POST['id'];
+    else {
+        $query_string = "DELETE FROM $tableName WHERE ID = '$ids'";
+        try {
+            $conn->query($query_string);
+        }
+        catch (Exception $e) {
+            $_SESSION["mysql_error"] = "Error description: ". $conn -> error;
+            $_SESSION["row_id"] = $_POST['id'];
+        }
     }
-    var_dump($_POST);
     header("Location: {$_SERVER["HTTP_REFERER"]}");
     exit();
 }

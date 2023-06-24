@@ -266,13 +266,8 @@ function getTables() {
 
 function removeEmptyTable() {
     var tables = getTables();
-    console.log(tables[0]);
-    console.log(tables[1]);
-        // console.log(tables.length);
     for (k = 0; k < tables.length; k++) {
-        console.log(tables[k].rows.length);
         if (tables[k].rows.length < 2) {
-            console.log("Removing: " + k);
             tables[k].remove();
             k = k - 1;
         }

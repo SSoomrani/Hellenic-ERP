@@ -32,7 +32,14 @@ function displayEditForm(n, table) {
 function displayDeleteForm(tableIndex, n) {
     document.getElementById('delete-form').style.display = "block";
     var rows = getTables()[tableIndex].rows;
-    document.getElementById('delete_id').value = rows[n + 1].getElementsByTagName("TD")[0].innerText;
+    if (selected.length == 0) {
+        document.getElementById('delete_id').value = rows[n + 1].getElementsByTagName("TD")[0].innerText;
+    } else {
+        for (i = 0; i < selected.length; i++) {
+            console.log(rows[selected[i]].getElementsByTagName("TD")[0].innerText);
+            document.getElementById('delete_id').value += rows[selected[i]].getElementsByTagName("TD")[0].innerText + ",";
+        }
+    }
 }
 
 function displayEmailForm(customerIdentifiers) {
@@ -81,8 +88,8 @@ function displayEmailForm(customerIdentifiers) {
         const tableRow = document.createElement("tr");
         newTable.appendChild(tableRow);
 
-        data[0] = rows[selected[i]].getElementsByTagName("TD")[array[1]].innerText
-        data[4] = rows[selected[i]].getElementsByTagName("TD")[array[2]].innerText
+        data[0] = rows[selected[i]].getElementsByTagName("TD")[array[1]].innerText;
+        data[4] = rows[selected[i]].getElementsByTagName("TD")[array[2]].innerText;
 
         var customerID = rows[selected[i]].getElementsByTagName("TD")[array[0]].innerText;
         var startingIndex = customerIdentifiers.indexOf(customerID);
@@ -96,7 +103,7 @@ function displayEmailForm(customerIdentifiers) {
                 const input = document.createElement("input");
                 input.setAttribute("name", "selected" + i + "-" + k);
                 input.setAttribute("value", data[k]);
-                input.setAttribute("type", "hidden")
+                input.setAttribute("type", "hidden");
                 element.appendChild(input);
                 const td = document.createElement("td");
                 const tableData = document.createTextNode(data[k]);

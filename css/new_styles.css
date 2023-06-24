@@ -89,7 +89,7 @@ h6 {
 
 .grid-container {
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto;
+    grid-template-columns: repeat(auto-fit, minmax(20px, 1fr));
     gap: 10px;
     padding: 10px;
 }
@@ -238,7 +238,7 @@ hr {
 
 .text-end {
     text-align: right!important;
-    padding-left: 40%;
+    padding-left: 30%;
 }
 
 .card p {

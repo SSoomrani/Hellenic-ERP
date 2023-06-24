@@ -8,7 +8,7 @@
 ?>
 
 <div id="add-form-container" class="popup-form">
-  <form class="popup-form-content animate" id="add-form" action="dbh/manageData.php" method="post">
+  <form class="popup-form-content animate" id="add-form" action="dbh/manage_data.php" method="post">
     <input type="hidden" name="table_name" value="<?php echo($table_name);?>">
     <div class="popup-form-container" id="addForm">
       <p id="add_error"></p>

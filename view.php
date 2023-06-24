@@ -116,7 +116,7 @@
     </div>
 
     <div id="id02" class="popupForm">
-      <form class="addForm-content animate" action="./manageData.php" method="post">
+      <form class="addForm-content animate" action="./manage_data.php" method="post">
         <input type="hidden" name="table_name" value="<?php echo($tableName);?>">
         <div class="container" id="addForm">
           <p id="add_error"></p>
@@ -136,7 +136,7 @@
       </form>
     </div>
     <div id="id03" class="popupForm">
-      <form class="popupForm-content animate" action="./manageData.php" method="post">
+      <form class="popupForm-content animate" action="./manage_data.php" method="post">
         <input type="hidden" id="identity" name="id" value="">
         <input type="hidden" name="table_name" value="<?php echo($tableName);?>">
         <div class="container" id="editForm">
@@ -158,7 +158,7 @@
       </form>
     </div>
     <div id="changeTable" class="popupForm">
-      <form class="popupForm-content animate" action="./manageData.php" method="post">
+      <form class="popupForm-content animate" action="./manage_data.php" method="post">
         <h1>Change Table</h1>
         <label for="table">Choose a table:</label>
         <select id="table" name="table_name">
@@ -186,7 +186,7 @@ window.onclick = function(event) {
 function changeTable(table_name) {
   console.log("Changing table");
   var xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("GET", "manageData.php?q=" + table_name, true);
+  xmlhttp.open("GET", "manage_data.php?q=" + table_name, true);
   xmlhttp.send();
   window.location.reload();
 }
