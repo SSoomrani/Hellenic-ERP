@@ -15,8 +15,6 @@
     $income_week = get_row_contents($conn, "SELECT SUM(total) AS total_sum FROM invoices WHERE created_at >= curdate() - INTERVAL 1 WEEK")[0][0];
     $amount_overdue = get_row_count($conn, "SELECT * FROM `invoices` WHERE `status` = 'overdue'");
     $amount_overdue_week = get_row_count($conn, "SELECT * FROM `invoices` WHERE YEARWEEK(created_at) = YEARWEEK(CURDATE()) AND `status` = 'overdue'");
-
-    $edit_error_info = get_error_info();
 ?>
 <!DOCTYPE html>
 <html>
@@ -74,8 +72,6 @@ document.addEventListener('DOMContentLoaded', function() {
     removeEmptyTable();
 });
 
-checkError();
-
 function populateWidgets() {
     configureWidgets(1, "Invoices Due Today", "outgoing_mail", "<?php echo($invoices_due_today); ?>",
         "<?php echo($invoices_due_week); ?>", " due this week.");
@@ -90,29 +86,7 @@ function populateWidgets() {
 
 function setToolbar() {
     disableToolbarButton(1);
-}
-
-function fixFilter() {}
-
-function checkError() {
-    var error = "<?php echo $edit_error_info[0]; ?>";
-    var rowID = "<?php echo $edit_error_info[1]; ?>";
-    var errorType = "<?php echo $edit_error_info[2]; ?>";
-    if (error != "") {
-        if (errorType == "edit") {
-            var errorMsg = document.getElementById("edit_error");
-            errorMsg.innerText = error;
-            if (rowID != -1) {
-                displayEditForm(rowID - 1);
-            }
-        } else {
-            var errorMsg = document.getElementById("add_error");
-            errorMsg.innerText = error;
-            if (rowID != -1) {
-                document.getElementById('add-form').style.display = 'block';
-            }
-        }
-        <?php session_unset(); ?>
-    }
+    setToolbarIcon(4, "open_in_new");
+    setToolbarOnClick(4, goto);
 }
 </script>

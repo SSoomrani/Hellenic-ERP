@@ -500,6 +500,7 @@ tr {
 }
 
 input[type=text],
+input[type=date],
 input[type=password],
 select {
     width: 100%;

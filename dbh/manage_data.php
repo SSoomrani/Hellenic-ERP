@@ -10,32 +10,10 @@ if (isset($_POST['add'])) {
 if (isset($_POST['append'])) {
     append();
 }
-if (isset($_POST['change_table'])) {
-    change_table();
-}
-if (isset($_REQUEST['q'])) {
-    change_table();
-}
-if (isset($_POST['email_invoices'])) {
-    email_invoices();
-}
 else {
     echo("ERROR: Inconclusive call...");
 }
 
-function add_customer() {
-    $forename = $_POST['forename'];
-    $surname = $_POST['surname'];
-    $phone_number_primary = $_POST['phone_number_primary'];
-    $email = $_POST['email'];
-    $customer_type = $_POST['customer_type'];
-
-    require 'dbh.php';
-
-    mysqli_query($conn, "INSERT INTO customers (forename, surname, phone_number_primary, email, customer_type) VALUES ('$forename', '$surname', '$phone_number_primary', '$email', '$customer_type')");
-    header("Location: ./customer.php");
-    exit();
-}
 function add() {
     require 'dbh.php';
     $data_names = array();
@@ -50,6 +28,13 @@ function add() {
             $data_names[] = str_replace(' ', '', $row['Comment']);
         }
     }
+    foreach ($field_names as $key => $field_name) {
+        if (str_contains($field_names[$key], "date")) {
+           $submitted_data[] = check_date($_POST[$field_names[$key]]);
+        } else {
+            $submitted_data[] = $_POST[$field_names[$key]];
+        }
+    }
     $query_string = 'INSERT INTO '. $table_name. ' (';
     for ($i = 0; $i < sizeof($field_names); $i++) {
         if ($_POST[$field_names[$i]] != "") {
@@ -59,12 +44,10 @@ function add() {
     $query_string = substr($query_string, 0, -2). ") VALUES (";
     for ($i = 0; $i < sizeof($field_names); $i++) {
         if ($_POST[$field_names[$i]] != "") {
-            $query_string = $query_string. "'". $_POST[$field_names[$i]]. "', ";
+            $query_string = $query_string. "'". $submitted_data[$i]. "', ";
         }
-        $submitted_data[] = $_POST[$field_names[$i]];
     }
     $query_string = substr($query_string, 0, -2). ");";
-
     try {
         $conn->query($query_string);
     }
@@ -73,7 +56,6 @@ function add() {
         $_SESSION["error_type"] = "add";
         $_SESSION["submitted_data"] = $submitted_data;
     }
-    echo($conn->error);
     header("Location: {$_SERVER["HTTP_REFERER"]}");
     exit();
 }
@@ -155,13 +137,7 @@ function delete() {
     header("Location: {$_SERVER["HTTP_REFERER"]}");
     exit();
 }
-function change_table() {
-    $table_name = $_REQUEST["q"];
-    $_SESSION["current_table"] = $table_name;
-    echo("Table changed");
-    // header("Location: ./view.php");
-    // exit();
-}
-function email_invoices() {
-    
+
+function check_date($original_date) {
+    return date("Y-m-d", strtotime($original_date));
 }

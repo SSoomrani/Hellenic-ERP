@@ -6,7 +6,7 @@
     $editable_formatted_names = $table_info[2];
     $editable_field_names = $table_info[3];
 ?>
-<table>
+<table id="<?php echo($table_name); ?>">
     <tr>
         <?php foreach($formatted_names as $key => $value): ?>
             <?php if($key != 0): ?>

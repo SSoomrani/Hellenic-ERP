@@ -81,11 +81,14 @@
                     displayEditForm(rowID - 1);
                 }
             } else {
+                var elements = document.getElementById("add-form").elements;
+                var submittedData = <?php echo json_encode($submitted_data); ?>;
+                for (var i = 0, element; element = elements[i++];) {
+                    element.value = submittedData[i-2];
+                }
                 var errorMsg = document.getElementById("add_error");
                 errorMsg.innerText = error;
-                if (rowID != -1) {
-                    document.getElementById('add-form').style.display='block';
-                }
+                document.getElementById('add-form-container').style.display='block';
             }
             <?php session_unset(); ?>
         }

@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadElement("toolbar.html", "widget-placeholder");
 });
 
-checkEditError();
+checkError();
 
 function populateWidgets() {
     configureWidgets(1, "blank", "hourglass_empty", "blank", "blank", "blank");
@@ -72,16 +72,28 @@ function populateWidgets() {
     configureWidgets(4, "blank", "hourglass_empty", "blank", "blank", "blank");
 }
 
-function checkEditError() {
-    var error = "<?php echo $edit_error_info[0]; ?>";
-    var rowID = "<?php echo $edit_error_info[1]; ?>"
-    if (error != "") {
-        var errorMsg = document.getElementById("edit_error");
-        errorMsg.innerText = error;
-        if (rowID != -1) {
-            displayEditForm(rowID - 1);
+function checkError() {
+        var error = "<?php echo $error_info[0]; ?>";
+        var rowID = "<?php echo $error_info[1]; ?>";
+        var errorType = "<?php echo $error_info[2]; ?>";
+        if (error != "") {
+            if (errorType == "edit") {
+                var errorMsg = document.getElementById("edit_error");
+                errorMsg.innerText = error;
+                if (rowID != -1) {
+                    displayEditForm(rowID - 1);
+                }
+            } else {
+                var elements = document.getElementById("add-form").elements;
+                var submittedData = <?php echo json_encode($submitted_data); ?>;
+                for (var i = 0, element; element = elements[i++];) {
+                    element.value = submittedData[i-2];
+                }
+                var errorMsg = document.getElementById("add_error");
+                errorMsg.innerText = error;
+                document.getElementById('add-form-container').style.display='block';
+            }
+            <?php session_unset(); ?>
         }
-        <?php session_unset(); ?>
     }
-}
 </script>

@@ -273,3 +273,11 @@ function removeEmptyTable() {
         }
     }
 }
+
+function prepareIDs() {
+
+}
+
+function goto() {
+
+}

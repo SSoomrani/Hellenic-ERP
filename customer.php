@@ -61,7 +61,7 @@
         loadElement("widgets.html", "widget-placeholder", populateWidgets);
     });
 
-    checkEditError();
+    checkError();
 
     function populateWidgets()
     {
@@ -71,15 +71,26 @@
         configureWidgets(4, "placeholder", "money_off", "placeholder", "10", " placeholder");
     }
 
-
-    function checkEditError() {
-        var error = "<?php echo $edit_error_info[0]; ?>";
-        var rowID = "<?php echo $edit_error_info[1]; ?>"
+    function checkError() {
+        var error = "<?php echo $error_info[0]; ?>";
+        var rowID = "<?php echo $error_info[1]; ?>";
+        var errorType = "<?php echo $error_info[2]; ?>";
         if (error != "") {
-            var errorMsg = document.getElementById("edit_error");
-            errorMsg.innerText = error;
-            if (rowID != -1) {
-                displayEditForm(rowID - 1);
+            if (errorType == "edit") {
+                var errorMsg = document.getElementById("edit_error");
+                errorMsg.innerText = error;
+                if (rowID != -1) {
+                    displayEditForm(rowID - 1);
+                }
+            } else {
+                var elements = document.getElementById("add-form").elements;
+                var submittedData = <?php echo json_encode($submitted_data); ?>;
+                for (var i = 0, element; element = elements[i++];) {
+                    element.value = submittedData[i-2];
+                }
+                var errorMsg = document.getElementById("add_error");
+                errorMsg.innerText = error;
+                document.getElementById('add-form-container').style.display='block';
             }
             <?php session_unset(); ?>
         }
