@@ -50,6 +50,7 @@ function add() {
     $query_string = substr($query_string, 0, -2). ");";
     try {
         $conn->query($query_string);
+        synchronise($conn, $table_name);
     }
     catch (Exception $e) {
         $_SESSION["mysql_error"] = "Error description: ". $conn -> error;
@@ -110,7 +111,6 @@ function delete() {
     $ids = $_POST['id'];
     if (str_contains($ids, ",")) {
         $id_array = explode(',', $ids);
-        var_dump($id_array);
         foreach ($id_array as $id) {
             $query_string = "DELETE FROM $tableName WHERE ID = '$id'";
             try {
@@ -141,3 +141,33 @@ function delete() {
 function check_date($original_date) {
     return date("Y-m-d", strtotime($original_date));
 }
+function synchronise($conn, $table_name) {
+    run_query($conn, "SET information_schema_stats_expiry = 0");
+    $id = get_row_contents($conn, "SELECT auto_increment from information_schema.tables WHERE table_name = '".$table_name."' AND table_schema = DATABASE()")[0][0] - 1;
+    switch ($table_name) {
+        case "items_invoiced":
+            $invoice_id = get_row_contents($conn, "SELECT invoice_id FROM items_invoiced WHERE id = '".$id."'")[0][0];
+            $invoiced_item_data = get_row_contents($conn, "SELECT item_id, quantity, vat_charge FROM items_invoiced WHERE invoice_id = '".$invoice_id."'");
+            $total = 0;
+            foreach ($invoiced_item_data as $key => $value) {
+                $current_total = 0;
+                $price[] = get_row_contents($conn, "SELECT list_price FROM items WHERE id = '".$invoiced_item_data[$key][0]."'")[0][0];
+                $current_total += $price[$key] * $invoiced_item_data[$key][1];
+                if ($invoiced_item_data[$key][2] == "1") {
+                  $current_total += ($current_total * 0.2);
+                }
+                $total += $current_total;
+            }
+            run_query($conn, "UPDATE invoices SET total = '".$total."', VAT = '".($total * 0.2)."', net_value = '".$total-($total*0.2)."' WHERE id = '".$invoice_id."'");
+            break;
+    }
+}
+function get_row_contents($conn, $query_string) {
+    $query = $conn->query($query_string);
+    $contents = $query->fetch_all();
+    return $contents;
+ }
+ function run_query($conn, $query) {
+    $conn->query($query);
+  }
+?>

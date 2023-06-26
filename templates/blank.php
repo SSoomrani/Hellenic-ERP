@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadElement("widgets.html", "widget-placeholder", populateWidgets);
 });
 
-checkEditError();
+checkError();
 
 function populateWidgets() {
     configureWidgets(1, "blank", "hourglass_empty", "blank", "blank", "blank");
@@ -71,7 +71,7 @@ function populateWidgets() {
     configureWidgets(4, "blank", "hourglass_empty", "blank", "blank", "blank");
 }
 
-function checkEditError() {
+function checkError() {
     var error = "<?php echo $edit_error_info[0]; ?>";
     var rowID = "<?php echo $edit_error_info[1]; ?>"
     if (error != "") {

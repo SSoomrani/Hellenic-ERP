@@ -274,8 +274,17 @@ function removeEmptyTable() {
     }
 }
 
-function prepareIDs() {
-
+function viewAssoc() {
+    if (selected.length == 0) {
+        displayErrorForm("Nothing selected!");
+    } else {
+        var inputs = document.getElementById("view-assoc-form").elements;
+        var rowData = getTables()[0].rows[selected[0]].getElementsByTagName("TD");
+        for (i = 0; i < inputs.length - 1; i++) {
+            inputs[i + 1].value = rowData[i].innerText;
+        }
+        document.getElementById("view-assoc-form").submit();
+    }
 }
 
 function goto() {

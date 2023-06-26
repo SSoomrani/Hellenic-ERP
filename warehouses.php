@@ -7,17 +7,11 @@
     require 'dbh/initialise.php';
     require 'dbh/customer_data.php';
 
-    $table_info = get_table_info($conn, $table_name);
-    $formatted_names = $table_info[0];
-    $field_names = $table_info[1];
-    $editable_formatted_names = $table_info[2];
-    $editable_field_names = $table_info[3];
-
-    $rows = get_table_contents($conn, $table_name);
-
-    //Run queries for widgets from initialise.php
+    $filter = "";
 
     $error_info = get_error_info();
+    $submitted_data = get_submitted_data();
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -56,18 +50,9 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         loadElement("sidenav.html", "nav-placeholder");
-        loadElement("widgets.html", "widget-placeholder", populateWidgets);
+        loadElement("toolbar.html", "widget-placeholder");
+        checkError();
     });
-
-    checkError();
-
-    function populateWidgets()
-    {
-        configureWidgets(1, "blank", "hourglass_empty", "blank", "blank", "blank");
-        configureWidgets(2, "blank", "hourglass_empty", "blank", "blank", "blank");
-        configureWidgets(3, "blank", "hourglass_empty", "blank", "blank", "blank");
-        configureWidgets(4, "blank", "hourglass_empty", "blank", "blank", "blank");
-    }
 
     function checkError() {
         var error = "<?php echo $error_info[0]; ?>";

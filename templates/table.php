@@ -1,5 +1,5 @@
 <?php
-    $rows = get_table_contents($conn, $table_name);
+    $rows = get_table_contents($conn, $table_name, $filter);
     $table_info = get_table_info($conn, $table_name);
     $formatted_names = $table_info[0];
     $field_names = $table_info[1];

@@ -6,18 +6,11 @@
     require 'dbh/dbh.php';
     require 'dbh/initialise.php';
     require 'dbh/customer_data.php';
-
-    $table_info = get_table_info($conn, $table_name);
-    $formatted_names = $table_info[0];
-    $field_names = $table_info[1];
-    $editable_formatted_names = $table_info[2];
-    $editable_field_names = $table_info[3];
-
-    $rows = get_table_contents($conn, $table_name);
-
     
+    $filter = "";
 
-    $edit_error_info = get_error_info();
+    $error_info = get_error_info();
+    $submitted_data = get_submitted_data();
 ?>
 <!DOCTYPE html>
 <html>
@@ -49,36 +42,44 @@
     <div id="form-placeholder">
         <?php include 'templates/forms.php'; ?>
         <?php include 'templates/edit_form.php'; ?>
+        <?php include 'templates/add_form.php'; ?>
     </div> 
 </body>
 </html>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         loadElement("sidenav.html", "nav-placeholder");
-        loadElement("widgets.html", "widget-placeholder", populateWidgets);
+        loadElement("toolbar.html", "widget-placeholder", configure);
     });
 
-    checkEditError();
+function configure() {
+    checkError();
+}
 
-    function populateWidgets()
-    {
-        configureWidgets(1, "blank", "hourglass_empty", "blank", "blank", "blank");
-        configureWidgets(2, "blank", "hourglass_empty", "blank", "blank", "blank");
-        configureWidgets(3, "blank", "hourglass_empty", "blank", "blank", "blank");
-        configureWidgets(4, "blank", "hourglass_empty", "blank", "blank", "blank");
-    }
-
-
-    function checkEditError() {
-        var error = "<?php echo $edit_error_info[0]; ?>";
-        var rowID = "<?php echo $edit_error_info[1]; ?>"
-        if (error != "") {
+function checkError() {
+    var error = "<?php echo $error_info[0]; ?>";
+    var rowID = "<?php echo $error_info[1]; ?>";
+    var errorType = "<?php echo $error_info[2]; ?>";
+    if (error != "") {
+        if (errorType == "add") {
+            var elements = document.getElementById("add-form").elements;
+            var submittedData = <?php echo json_encode($submitted_data); ?>;
+            for (var i = 0; i < elements.length-2; i++) {
+                elements[i+2].value = submittedData[i];
+            }
+            var errorMsg = document.getElementById("add_error");
+            errorMsg.innerText = error;
+            document.getElementById('add-form-container').style.display='block';
+        } else if (errorType == "edit") {
             var errorMsg = document.getElementById("edit_error");
             errorMsg.innerText = error;
             if (rowID != -1) {
                 displayEditForm(rowID - 1);
             }
-            <?php session_unset(); ?>
+        } else {
+            displayErrorForm(error);
         }
+        <?php session_unset(); ?>
     }
+}
 </script>

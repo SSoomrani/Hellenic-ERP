@@ -124,7 +124,7 @@ function displayEmailForm(customerIdentifiers) {
 
 function printForm() {
     if (checkSelect()) {
-        document.getElementById("print-row-id").value = selected;
+        document.getElementById("print-row-id").value = getTables()[0].rows[selected[0]].getElementsByTagName("TD")[0].innerText;
         document.getElementById("print-form").submit();
     }
 }

@@ -7,18 +7,13 @@
     require 'dbh/initialise.php';
     require 'dbh/customer_data.php';
 
-    $table_info = get_table_info($conn, $table_name);
-    $formatted_names = $table_info[0];
-    $field_names = $table_info[1];
-    $editable_formatted_names = $table_info[2];
-    $editable_field_names = $table_info[3];
-
-    $rows = get_table_contents($conn, $table_name);
+    $filter = "";
 
     $item_names = get_row_contents($conn, "SELECT `item_name` FROM `items`");
 
     $error_info = get_error_info();
     $submitted_data = get_submitted_data();
+
 
 ?>
 <!DOCTYPE html>
@@ -63,23 +58,21 @@
                 <p id="add_error"></p>
                 <br>
                 <?php foreach($editable_formatted_names as $key => $value): ?>
-                    <?php if ($editable_formatted_names[$key] != "Item ID"): ?>
-                        <label><?php echo "$editable_formatted_names[$key]: "; ?></label>
-                        <br>
-                        <?php if (in_array($editable_field_names[$key], $required_fields)): ?>
-                            <?php if ($editable_field_names[$key] == "item_name"): ?>
-                                <select name="item_id" class="form-control" id="item-name-select" placeholder="Enter item name">
-                                    <?php foreach($item_names as $key => $value): ?>
-                                        <option value="<?php echo($key); ?>"><?php echo($item_names[$key][0]); ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            <?php else: ?>
-                                <input class="form-control" required id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo($editable_field_names[$key]); ?>">
-                            <?php endif; ?>
+                    <label><?php echo "$editable_formatted_names[$key]: "; ?></label>
+                    <br>
+                    <?php if (in_array($editable_field_names[$key], $required_fields)): ?>
+                        <?php if ($editable_field_names[$key] == "item_id"): ?>
+                            <select name="item_id" class="form-control" id="item-name-select" placeholder="Enter item name">
+                                <?php foreach($item_names as $key => $value): ?>
+                                    <option value="<?php echo($key); ?>"><?php echo($item_names[$key][0]); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         <?php else: ?>
-                            <input class="form-control" id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo($editable_field_names[$key]); ?>">
+                            <input class="form-control" required id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo($editable_field_names[$key]); ?>">
                         <?php endif; ?>
-                    <?php endif?>
+                    <?php else: ?>
+                        <input class="form-control" id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>" type="text" name="<?php echo($editable_field_names[$key]); ?>">
+                    <?php endif; ?>
                 <?php endforeach; ?>
             </div>
             <div class="popup-form-container-small popup-form-container-footer">

@@ -7,19 +7,14 @@
     require 'dbh/initialise.php';
     require 'dbh/customer_data.php';
 
-    $table_info = get_table_info($conn, $table_name);
-    $formatted_names = $table_info[0];
-    $field_names = $table_info[1];
-    $editable_formatted_names = $table_info[2];
-    $editable_field_names = $table_info[3];
-
-    $rows = get_table_contents($conn, $table_name);
+    $filter = "";
 
     $total = get_row_count($conn, "SELECT * FROM `customers`");
     $total_week = get_row_count($conn, "SELECT * FROM `customers` WHERE YEARWEEK(created_at) = YEARWEEK(CURDATE())");
     $total_outstanding = get_row_count($conn, "SELECT * FROM `customers` WHERE `outstanding_balance` IS NOT NULL");
 
-    $edit_error_info = get_error_info();
+    $error_info = get_error_info();
+    $submitted_data = get_submitted_data();
 ?>
 <!DOCTYPE html>
 <html>
@@ -59,9 +54,9 @@
     document.addEventListener('DOMContentLoaded', function() {
         loadElement("sidenav.html", "nav-placeholder");
         loadElement("widgets.html", "widget-placeholder", populateWidgets);
+        loadElement("toolbar.html", "widget-placeholder");
+        
     });
-
-    checkError();
 
     function populateWidgets()
     {
@@ -69,10 +64,12 @@
         configureWidgets(2, "Total with Outstanding Balance", "money_off", <?php echo($total_outstanding); ?>, "10", " placeholder");
         configureWidgets(3, "placeholder", "money_off", "placeholder", "10", " placeholder");
         configureWidgets(4, "placeholder", "money_off", "placeholder", "10", " placeholder");
+        checkError();
     }
 
     function checkError() {
         var error = "<?php echo $error_info[0]; ?>";
+        console.log(error);
         var rowID = "<?php echo $error_info[1]; ?>";
         var errorType = "<?php echo $error_info[2]; ?>";
         if (error != "") {

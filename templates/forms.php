@@ -49,3 +49,11 @@
         </div>
     </div>
 </div>
+<div id="view-assoc-container" class="popup-form">
+    <form class="popup-form-content animate" id="view-assoc-form" action="view.php" method="post">
+        <input type="hidden" name="table_name" value="<?php echo($table_name);?>">
+        <?php foreach($formatted_names as $key => $value): ?>
+            <input hidden class="form-control" required id="view-assoc-<?php echo str_replace(' ', '', $formatted_names[$key]); ?>" type="text" name="<?php echo($field_names[$key]); ?>" value="blank">
+        <?php endforeach; ?>
+    </form>
+</div>

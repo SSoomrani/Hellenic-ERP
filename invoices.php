@@ -7,13 +7,9 @@ require 'dbh/dbh.php';
 require 'dbh/initialise.php';
 require 'dbh/customer_data.php';
 
-$table_info = get_table_info($conn, "invoices");
-$formatted_names = $table_info[0];
-$field_names = $table_info[1];
-$editable_formatted_names = $table_info[2];
-$editable_field_names = $table_info[3];
+$filter = "";
 
-$rows = get_table_contents($conn, $table_name);
+$rows = get_table_contents($conn, $table_name, $filter);
 $types = get_types($conn, $table_name);
 run_query($conn, "SET information_schema_stats_expiry = 0");
 $next_ID = get_row_contents($conn, "SELECT auto_increment from information_schema.tables WHERE table_name = 'invoices' AND table_schema = DATABASE()")[0][0];
@@ -33,7 +29,7 @@ $customer_identifiers = get_customer_names($conn);
 
 $error_info = get_error_info();
 $submitted_data = get_submitted_data();
-var_dump($submitted_data);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -83,9 +79,9 @@ var_dump($submitted_data);
                 <?php if (in_array($editable_field_names[$key], $required_fields)): ?>
                     <?php if ($editable_field_names[$key] == "customer_id"): ?>
                     <select name="customer_id" class="form-control" id="item-name-select" placeholder="Enter item name">
+                        <option disabled selected value> --- Select Customer --- </option>
                         <?php foreach ($customer_names as $key => $value): ?>
-                        <option value="<?php echo $customer_ids[$key][0]; ?>"><?php echo $customer_names[$key][0]; ?>
-                        </option>
+                        <option value="<?php echo $customer_ids[$key][0]; ?>"><?php echo $customer_names[$key][0]; ?></option>
                         <?php endforeach; ?>
                     </select>
                     <?php elseif ($editable_field_names[$key] == "title"): ?>
@@ -94,7 +90,7 @@ var_dump($submitted_data);
                         name="<?php echo $editable_field_names[$key]; ?>" />
                     <?php elseif ($editable_field_names[$key] == "status"): ?>
                     <select name="<?php echo $editable_field_names[$key]; ?>" class="form-control" id="status-select">
-                        <option disabled selected value>Select Invoice Status</option>
+                        <option disabled selected value> --- Select Invoice Status --- </option>
                         <option value="Pending">Pending</option>
                         <option value="Complete">Complete</option>
                         <option value="Overdue">Overdue</option>
@@ -102,7 +98,7 @@ var_dump($submitted_data);
                     <?php elseif ($types[$key] == "varchar(5)"): ?>
                         <select name="<?php echo $editable_field_names[$key]; ?>" class="form-control" required
                         id="<?php echo str_replace(' ', '', $editable_formatted_names[$key]); ?>">
-                        <option disabled selected value>Select true / false</option>
+                        <option disabled selected value> --- Select true / false --- </option>
                         <option value="true">True</option>
                         <option value="false">False</option>
                         </select>
@@ -157,9 +153,15 @@ var_dump($submitted_data);
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     loadElement("sidenav.html", "nav-placeholder");
-    loadElement("widgets.html", "widget-placeholder", populateWidgets);
+    loadElement("widgets.html", "widget-placeholder", configure);
     loadElement("toolbar.html", "widget-placeholder");
 });
+
+function configure() {
+    populateWidgets();
+    dayDifferenceTotal();
+    checkError();
+}
 
 function populateWidgets() {
     configureWidgets(1, "Today's Invoices", "receipt_long", <?php echo $amount_today; ?>, 10, " more than yesterday");
@@ -170,8 +172,6 @@ function populateWidgets() {
     configureWidgets(4, "Completed Today", "check", <?php echo $amount_completed_today; ?>,
         <?php echo $amount_completed_week; ?>, " from this week");
     document.getElementById("widget-box-3").setAttribute("onclick", "displayOverdue()");
-    dayDifferenceTotal();
-    checkError();
 }
 
 function calculateTotal() {
@@ -205,12 +205,8 @@ function checkError() {
             }
         } else {
             var elements = document.getElementById("add-form").elements;
-            console.log(elements);
             var submittedData = <?php echo json_encode($submitted_data); ?>;
-            console.log(submittedData);
-            console.log("Element length:" + elements.length);
             for (var i = 0; i < elements.length-2; i++) {
-                console.log(elements[i+1]);
                 elements[i+2].value = submittedData[i];
             }
             var errorMsg = document.getElementById("add_error");

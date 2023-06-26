@@ -31,9 +31,15 @@
         4 => $required_fields,
     );
  }
- function get_table_contents($conn, $table_name) {
-    $query = $conn->query('SELECT * FROM '. $table_name);
-    return $query->fetch_all(MYSQLI_ASSOC);
+ function get_table_contents($conn, $table_name, $filter) {
+    if ($filter == "") {
+      $query = $conn->query('SELECT * FROM '. $table_name);
+      return $query->fetch_all(MYSQLI_ASSOC);
+    } else {
+      $query = $conn->query("SELECT * FROM ".$table_name." ".$filter);
+      return $query->fetch_all(MYSQLI_ASSOC);
+    }
+
  }
 
  function get_row_contents($conn, $query_string) {
@@ -131,11 +137,30 @@ function get_types($conn, $table_name) {
   return $types;
 }
 
+function get_tables($conn) {
+  $query = $conn->query("SHOW TABLES");
+  $contents = $query->fetch_all();
+  return $contents;
+}
+
 function sum_values($values) {
   $total = 0;
   foreach ($values as $value) {
     $total += $value[0];
   }
   return $total;
+}
+
+function pull_assoc($conn, $table_name) {
+  $tables = get_tables($conn);
+  foreach ($tables as $key => $table) {
+    $query = $conn->query("SELECT TABLE_NAME, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_NAME IS NOT NULL AND TABLE_SCHEMA = 'hellenic' AND TABLE_NAME = '".$tables[$key][0]."'");
+    $contents[$tables[$key][0]] = $query->fetch_all();
+  }
+  $assoc_table = $contents[$table_name][0][2];
+  $assoc_column = $contents[$table_name][0][1];
+  $assoc_reference = $contents[$table_name][0][3];
+  $query = $conn->query("SELECT * FROM '".$assoc_table."' WHERE '".$assoc_reference."' = ".$_POST[$assoc_column]."'");
+  $results = $query->fetch_all();
 }
 ?>

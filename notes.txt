@@ -53,3 +53,13 @@ create table customer_address(id integer NOT NULL AUTO_INCREMENT COMMENT 'ID', c
 
 outstanding balance for when printed invoice update automatically on trigger
 both created date and delivery date
+
+MAKE viewAssoc BUTTON A FORM THAT TAKES IN SELECTED, TABLE, ROW ETC THEN PULLS DATA FROM ALL ASSOC FOREIGN KEYS ETC
+
+SELECT TABLE_NAME, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_NAME IS NOT NULL AND TABLE_SCHEMA = 'hellenic' AND TABLE_NAME = 'invoices';
+
+add batch number to stocked_items
+
+statistics
+change accounts to customers and have all the accountant crap in another 
+bank apis
