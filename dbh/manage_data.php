@@ -10,6 +10,9 @@ if (isset($_POST['add'])) {
 if (isset($_POST['append'])) {
     append();
 }
+if (isset($_POST['login'])) {
+    login();
+}
 else {
     echo("ERROR: Inconclusive call...");
 }
@@ -169,5 +172,44 @@ function get_row_contents($conn, $query_string) {
  }
  function run_query($conn, $query) {
     $conn->query($query);
+  }
+
+ function login() {
+    require 'dbh.php';
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $stmt = $conn->prepare("SELECT password FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->bind_result($passwordHash);
+    $stmt->fetch();
+    if ($passwordHash == null || !password_verify($password, $passwordHash)) {
+        $_SESSION['login_error'] =  "Error: The username or password is invalid!";
+        header("Location: {$_SERVER["HTTP_REFERER"]}");
+    }
+    else {
+        $_SESSION['logged_in'] = true;
+        header("Location: ../dashboard.php");
+    }
+  }
+  function create_account() {
+    require 'dbh.php';
+    $username = $_POST['username'];
+    $password = password_hash($_POST['password'], PASSWORD_BCRYPT, ['cost' => 10]);
+    $stmt = $conn->prepare("SELECT username FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    mysqli_stmt_store_result($stmt);
+    $rows = mysqli_stmt_num_rows($stmt);
+    if ($rows != 0) {
+        $_SESSION['login_error'] =  "Error: A user with that username is taken!";
+        header("Location: {$_SERVER["HTTP_REFERER"]}");
+    } 
+    else {
+        $stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
+        $stmt->bind_param("ss", $username);
+        $stmt->execute();
+    }
   }
 ?>
