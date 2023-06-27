@@ -2,13 +2,10 @@
     session_start();
 
     $table_name = $_SESSION["current_table"] = "items";
-
-    require 'dbh/dbh.php';
     require 'dbh/initialise.php';
-    require 'dbh/customer_data.php';
+    $conn = initialise();
     
     $filter = "";
-
     $error_info = get_error_info();
     $submitted_data = get_submitted_data();
 ?>
@@ -79,7 +76,7 @@ function checkError() {
         } else {
             displayErrorForm(error);
         }
-        <?php session_unset(); ?>
+        <?php clear_error_session(); ?>
     }
 }
 </script>

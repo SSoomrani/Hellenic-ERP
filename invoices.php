@@ -2,12 +2,12 @@
 session_start();
 
 $table_name = $_SESSION["current_table"] = "invoices";
-
-require 'dbh/dbh.php';
 require 'dbh/initialise.php';
-require 'dbh/customer_data.php';
+$conn = initialise();
 
 $filter = "";
+$error_info = get_error_info();
+$submitted_data = get_submitted_data();
 
 $rows = get_table_contents($conn, $table_name, $filter);
 $types = get_types($conn, $table_name);
@@ -26,10 +26,6 @@ $amount_completed_today = get_row_count($conn, "SELECT * FROM invoices WHERE DAT
 $amount_completed_week = get_row_count($conn, "SELECT * FROM invoices WHERE YEARWEEK(created_at) = YEARWEEK(CURDATE()) AND `status` = 'complete'");
 $today_yesterday_diff = $amount_today - $amount_yesterday;
 $customer_identifiers = get_customer_names($conn);
-
-$error_info = get_error_info();
-$submitted_data = get_submitted_data();
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -188,10 +184,6 @@ function calculateTotal() {
     }
 }
 
-function notifyOverdueInvoices() {
-
-}
-
 function checkError() {
     var error = "<?php echo $error_info[0]; ?>";
     var rowID = "<?php echo $error_info[1]; ?>";
@@ -213,20 +205,20 @@ function checkError() {
             errorMsg.innerText = error;
             document.getElementById('add-form-container').style.display='block';
         }
-        <?php session_unset(); ?>
+        <?php clear_error_session(); ?>
     }
 }
 
 function dayDifferenceTotal() {
-    var difference = "<?php echo $today_yesterday_diff; ?>";
+    var difference = parseInt(<?php echo $today_yesterday_diff; ?>);
     var element = document.getElementById("widget-text-value-1");
     if (difference >= 0) {
-        document.getElementById("widget-text-value-1").lastChild.textContent = " more than yesterday";
+        document.getElementById("widget-text-1").lastChild.textContent = " more than yesterday";
         element.innerText = difference;
         element.classList.add('text-success');
     } else {
         difference = Math.abs(difference);
-        document.getElementById("widget-text-value-1").lastChild.textContent = " less than yesterday";
+        document.getElementById("widget-text-1").lastChild.textContent = " less than yesterday";
         element.innerText = Math.abs(difference);
         element.classList.add('text-unsuccess');
     }

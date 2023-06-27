@@ -80,7 +80,7 @@ function checkError() {
         if (rowID != -1) {
             displayEditForm(rowID - 1);
         }
-        <?php session_unset(); ?>
+        <?php clear_error_session(); ?>
     }
 }
 </script>

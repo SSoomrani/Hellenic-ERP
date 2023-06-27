@@ -2,11 +2,8 @@
     session_start();
 
     $table_name = $_SESSION["current_table"] = "invoices";
-
-    require 'dbh/dbh.php';
     require 'dbh/initialise.php';
-    require 'dbh/customer_data.php';    
-
+    $conn = initialise();
     $filter = "";
 
     $invoices_due_today = get_row_count($conn, "SELECT * FROM invoices WHERE delivery_date = curdate()");
@@ -24,7 +21,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
-    <title><?php echo(ucfirst($table_name)); ?></title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="css/new_styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,7 +37,7 @@
 <body>
     <div id="nav-placeholder"></div>
     <div class="main main-content">
-        <h5>Pages / <p class="inline-shallow"><?php echo(ucfirst($table_name)); ?></p>
+        <h5>Pages / <p class="inline-shallow">Dashboard</p>
         </h5>
         <div id="widget-placeholder" class="grid-container">
             <div class="card item12">
@@ -88,6 +85,7 @@ function populateWidgets() {
 
 function setToolbar() {
     disableToolbarButton(1);
+    disableToolbarButton(2);
     setToolbarIcon(4, "open_in_new");
     setToolbarOnClick(4, goto);
 }

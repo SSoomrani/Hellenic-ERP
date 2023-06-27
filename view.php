@@ -1,18 +1,14 @@
 <?php
     session_start();
 
-    // $table_name = $_POST["table_name"];
-    $table_name = "invoices";
-    // $filter = "WHERE id = '".$_POST["id"]."'";
-    $filter = "";
-
-    require 'dbh/dbh.php';
+    $table_name = $_POST["table_name"];
     require 'dbh/initialise.php';
-    require 'dbh/customer_data.php';
-    // require 'dbh/data_handler.php';
+    $conn = initialise();
 
-    synchronise($conn, "items_invoiced", 9);
-
+    $filter = "";
+    $error_info = get_error_info();
+    $submitted_data = get_submitted_data();
+    // require 'dbh/data_handler.php'
 ?>
 <!DOCTYPE html>
 <html>

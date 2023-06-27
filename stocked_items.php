@@ -2,18 +2,14 @@
     session_start();
 
     $table_name = $_SESSION["current_table"] = "stocked_items";
-
-    require 'dbh/dbh.php';
     require 'dbh/initialise.php';
-    require 'dbh/customer_data.php';
-
+    $conn = initialise();
+    
     $filter = "";
-
-    $item_names = get_row_contents($conn, "SELECT `item_name` FROM `items`");
-
     $error_info = get_error_info();
     $submitted_data = get_submitted_data();
 
+    $item_names = get_row_contents($conn, "SELECT `item_name` FROM `items`");
 
 ?>
 <!DOCTYPE html>
@@ -137,7 +133,7 @@
                 errorMsg.innerText = error;
                 document.getElementById('add-form-container').style.display='block';
             }
-            <?php session_unset(); ?>
+            <?php clear_error_session(); ?>
         }
     }
 </script>

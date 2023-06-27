@@ -2,22 +2,16 @@
     session_start();
 
     $table_name = $_SESSION["current_table"] = "items_invoiced";
-
-    require 'dbh/dbh.php';
     require 'dbh/initialise.php';
-    require 'dbh/customer_data.php';
-
+    $conn = initialise();
+    
     $filter = "";
-
-    //Run queries for widgets from initialise.php
-    $invoice_titles = get_row_contents($conn, "SELECT `title` FROM `invoices`");
-    $invoice_ids = get_row_contents($conn, "SELECT `id` FROM `invoices`");
-    $item_names = get_row_contents($conn, "SELECT `item_name` FROM `items`");
-
-
     $error_info = get_error_info();
     $submitted_data = get_submitted_data();
 
+    $invoice_titles = get_row_contents($conn, "SELECT `title` FROM `invoices`");
+    $invoice_ids = get_row_contents($conn, "SELECT `id` FROM `invoices`");
+    $item_names = get_row_contents($conn, "SELECT `item_name` FROM `items`");
 ?>
 <!DOCTYPE html>
 <html>
@@ -141,7 +135,7 @@ function checkError() {
             errorMsg.innerText = error;
             document.getElementById('add-form-container').style.display='block';
         }
-        <?php session_unset(); ?>
+        <?php clear_error_session(); ?>
     }
 }
 
