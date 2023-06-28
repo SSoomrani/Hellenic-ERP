@@ -63,6 +63,7 @@ function add() {
     header("Location: {$_SERVER["HTTP_REFERER"]}");
     exit();
 }
+
 function append() {
     require 'dbh.php';
 
@@ -108,6 +109,7 @@ function append() {
     header("Location: {$_SERVER["HTTP_REFERER"]}");
     exit();
 }
+
 function delete() {
     require 'dbh.php';
     $tableName = $_POST['table_name'];
@@ -165,14 +167,16 @@ function synchronise($conn, $table_name) {
             break;
     }
 }
+
 function get_row_contents($conn, $query_string) {
     $query = $conn->query($query_string);
     $contents = $query->fetch_all();
     return $contents;
  }
+
  function run_query($conn, $query) {
     $conn->query($query);
-  }
+}
 
  function login() {
     require 'dbh.php';
@@ -192,7 +196,8 @@ function get_row_contents($conn, $query_string) {
         $_SESSION['logged_in'] = true;
         header("Location: ../dashboard.php");
     }
-  }
+}
+
   function create_account() {
     require 'dbh.php';
     $username = $_POST['username'];

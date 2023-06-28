@@ -3,6 +3,7 @@
   $query = $conn->query($query_string);
   return $query->num_rows;
 }
+
 function get_table_info($conn, $table_name) {
   $query = $conn->query('SHOW FULL COLUMNS FROM '. $table_name);
   $formatted_names = array();
@@ -10,6 +11,7 @@ function get_table_info($conn, $table_name) {
   $editable_formatted_names = array();
   $editable_field_names = array();
   $required_fields = array();
+
   while($row = $query->fetch_assoc()) {
       $formatted_names[] = $row['Comment'];
       $field_names[] = $row['Field'];
@@ -22,6 +24,7 @@ function get_table_info($conn, $table_name) {
         }
       }
   }
+
   return array(
       0 => $formatted_names,
       1 => $field_names,
@@ -30,6 +33,7 @@ function get_table_info($conn, $table_name) {
       4 => $required_fields,
   );
 }
+
 function get_table_contents($conn, $table_name, $filter) {
   if ($filter == "") {
     $query = $conn->query('SELECT * FROM '. $table_name);
@@ -40,11 +44,13 @@ function get_table_contents($conn, $table_name, $filter) {
   }
 
 }
+
 function get_row_contents($conn, $query_string) {
   $query = $conn->query($query_string);
   $contents = $query->fetch_all();
   return $contents;
 }
+
 function get_error_info() {
   $sql_error = "";
   if (isset($_SESSION['mysql_error'])) {
@@ -60,6 +66,7 @@ function get_error_info() {
   }
   return array ($sql_error, $row_id, $type);
 }
+
 function get_submitted_data() {
  $submitted_data = null;
  if (isset($_SESSION['submitted_data'])) {
@@ -67,6 +74,7 @@ function get_submitted_data() {
  }
  return $submitted_data;
 }
+
 function get_invoice_info($conn, $invoice_id) {
   $query_string = "SELECT
   invoices.title,
@@ -97,6 +105,7 @@ WHERE
   $contents = $query->fetch_all();
   return $contents;
 }
+
 function get_invoice_products($conn, $invoice_id) {
   $query_string = "SELECT
   items.item_name,
